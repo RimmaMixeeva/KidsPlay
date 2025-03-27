@@ -4,44 +4,72 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.viewModels
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
+import rimma.mixeeva.kidsplay.navigation.Navigator
+import rimma.mixeeva.kidsplay.navigation.Screen
+import rimma.mixeeva.kidsplay.screens.ChooseAvatarScreen
+import rimma.mixeeva.kidsplay.screens.ChooseNicknameScreen
+import rimma.mixeeva.kidsplay.screens.ColorGameScreen
+import rimma.mixeeva.kidsplay.screens.GreetingScreen
+import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var mediaPlayer: KidsMediaPlayer
+
+    @Inject
+    lateinit var navigator: Navigator
+
+    val mainViewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Инициализация и запуск музыки
+        mediaPlayer.playSong(R.raw.greeting, true)
         enableEdgeToEdge()
         setContent {
+            val controller = rememberNavController()
+            navigator.setController(controller)
             KidsPlayTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                NavHost(navController = controller, startDestination = Screen.GreetingScreen) {
+                    composable<Screen.GreetingScreen> {
+                        GreetingScreen(
+                            onPlay = { navigator.navigate(Screen.ChooseAvatarScreen) },
+                            onParent = {}
+                        )
+                    }
+                    composable<Screen.PlayGroundScreen> {
+                        PlaygroundScreen(colorPlay = { navigator.navigate(Screen.ColorGameScreen) })
+                    }
+                    composable<Screen.ColorGameScreen> {
+                        ColorGameScreen()
+                    }
+                    composable<Screen.ChooseAvatarScreen> {
+                        ChooseAvatarScreen(mainViewModel)
+                    }
+                    composable<Screen.ChooseNicknameScreen> {
+                        ChooseNicknameScreen()
+                    }
+
                 }
             }
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KidsPlayTheme {
-        Greeting("Android")
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.destroy() // Освобождение ресурсов
+        navigator.clear()
     }
 }
+
+
