@@ -18,10 +18,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,17 +41,17 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 
 @Composable
 fun ChooseAvatarScreen(viewModel: MainViewModel) {
-    val iconButtonColors = IconButtonDefaults.iconButtonColors(
-        containerColor = Color.Green,
-        disabledContainerColor = Color.LightGray
-    )
-    Box {
+    Box(
+        modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()
+            .padding(vertical = 100.dp),
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.White)
-                .padding(vertical = 100.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AutoResizedText(
@@ -143,24 +142,28 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
                     }
                 }
             }
+        }
+
+        Row(
+            modifier = Modifier.padding(horizontal = 50.dp).fillMaxSize(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
             IconButton(
                 onClick = {
                     viewModel.navigator.navigate(Screen.ChooseNicknameScreen)
                 },
-                colors = iconButtonColors,
                 modifier = Modifier
-                    .padding(vertical = 10.dp)
                     .size(80.dp),
                 enabled = viewModel.chosenAvatar.value != null
             ) {
                 Icon(
-                    imageVector = Icons.Default.Done,
-                    contentDescription = "choose",
-                    tint = Color.White,
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = "next",
+                    tint = if (viewModel.chosenAvatar.value != null) Color.Green else Color.Gray,
                     modifier = Modifier.fillMaxSize()
                 )
             }
-
         }
     }
 }

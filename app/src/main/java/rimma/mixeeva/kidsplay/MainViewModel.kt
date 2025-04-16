@@ -15,6 +15,7 @@ class MainViewModel @Inject constructor(
 
     var chosenAvatar: MutableState<Int?> = mutableStateOf(null)
     var chosenSex: MutableState<Sex?> = mutableStateOf(Sex.MALE)
+    var chosenNickname: MutableState<String> = mutableStateOf("")
     var maleAvatarList = listOf(
         R.drawable.male_avatar_1,
         R.drawable.male_avatar_2,

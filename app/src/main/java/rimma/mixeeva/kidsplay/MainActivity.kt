@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         ChooseAvatarScreen(mainViewModel)
                     }
                     composable<Screen.ChooseNicknameScreen> {
-                        ChooseNicknameScreen()
+                        ChooseNicknameScreen(mainViewModel)
                     }
 
                 }

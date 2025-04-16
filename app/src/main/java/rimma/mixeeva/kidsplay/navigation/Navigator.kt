@@ -17,4 +17,7 @@ class Navigator @Inject constructor() {
     fun navigate(screen: Screen){
         navController?.navigate(screen)
     }
+    fun popBackStack(){
+        navController?.popBackStack()
+    }
 }
