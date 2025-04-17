@@ -6,18 +6,21 @@ import kotlinx.serialization.Serializable
 sealed interface Screen {
 
     @Serializable
-    object GreetingScreen: Screen
+    data object GreetingScreen: Screen
 
     @Serializable
-    object ColorGameScreen: Screen
+    data object ColorGameScreen: Screen
 
     @Serializable
-    object PlayGroundScreen: Screen
+    data object PlayGroundScreen: Screen
 
     @Serializable
-    object ChooseAvatarScreen: Screen
+    data object ChooseAvatarScreen: Screen
 
     @Serializable
-    object ChooseNicknameScreen: Screen
+    data object ChooseNicknameScreen: Screen
+
+    @Serializable
+    data object KidAccountScreen: Screen
 
 }

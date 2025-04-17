@@ -22,8 +22,11 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +44,9 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 
 @Composable
 fun ChooseAvatarScreen(viewModel: MainViewModel) {
+    var choiceEnabled by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) { choiceEnabled = true }
+
     Box(
         modifier = Modifier
             .background(Color.White)
@@ -122,11 +128,13 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null
                             ) {
-                                if (viewModel.chosenAvatar.value == list.value[i]) {
-                                    viewModel.chosenAvatar.value = null
-                                } else {
-                                    viewModel.playSound(R.raw.choice)
-                                    viewModel.chosenAvatar.value = list.value[i]
+                                if (choiceEnabled) {
+                                    if (viewModel.chosenAvatar.value == list.value[i]) {
+                                        viewModel.chosenAvatar.value = null
+                                    } else {
+                                        viewModel.playSound(R.raw.choice)
+                                        viewModel.chosenAvatar.value = list.value[i]
+                                    }
                                 }
                             }
                     ) {
@@ -145,13 +153,16 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
         }
 
         Row(
-            modifier = Modifier.padding(horizontal = 50.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(horizontal = 50.dp)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Bottom
         ) {
             IconButton(
                 onClick = {
                     viewModel.navigator.navigate(Screen.ChooseNicknameScreen)
+                    choiceEnabled = false
                 },
                 modifier = Modifier
                     .size(80.dp),

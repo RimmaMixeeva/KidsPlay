@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import rimma.mixeeva.kidsplay.MainViewModel
+import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 
 
@@ -67,6 +68,7 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                         CircleShape
                     )
             ) {
+                if (viewModel.chosenAvatar.value != null){
                 Image(
                     painter = painterResource(viewModel.chosenAvatar.value!!),
                     contentDescription = "Выбранный аватар",
@@ -76,6 +78,7 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                         .aspectRatio(1f),
                     contentScale = ContentScale.Crop
                 )
+                }
             }
             Box(
                 modifier = Modifier
@@ -139,11 +142,11 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
             }
             IconButton(
                 onClick = {
-
+                    viewModel.navigator.navigate(Screen.KidAccountScreen)
                 },
                 modifier = Modifier
                     .size(80.dp),
-                enabled = viewModel.chosenAvatar.value != null
+                enabled = viewModel.chosenNickname.value.isNotEmpty()
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,

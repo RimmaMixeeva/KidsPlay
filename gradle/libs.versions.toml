@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+exoplayerVersion = "2.19.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -13,6 +14,7 @@ serialization = "1.6.3"
 hilt = "2.51.1"
 
 [libraries]
+google-exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayerVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 android-navigation-libs = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navVersion"}

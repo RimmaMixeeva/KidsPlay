@@ -15,6 +15,7 @@ import rimma.mixeeva.kidsplay.screens.ChooseAvatarScreen
 import rimma.mixeeva.kidsplay.screens.ChooseNicknameScreen
 import rimma.mixeeva.kidsplay.screens.ColorGameScreen
 import rimma.mixeeva.kidsplay.screens.GreetingScreen
+import rimma.mixeeva.kidsplay.screens.KidAccountScreen
 import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
@@ -58,6 +59,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.ChooseNicknameScreen> {
                         ChooseNicknameScreen(mainViewModel)
+                    }
+                    composable<Screen.KidAccountScreen> {
+                        KidAccountScreen(mainViewModel)
                     }
 
                 }
