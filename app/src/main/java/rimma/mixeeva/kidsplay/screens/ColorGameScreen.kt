@@ -24,7 +24,7 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 fun ColorGameScreen() {
     Box {
         Image(
-            painter = painterResource(id = R.drawable.bluewall),
+            painter = painterResource(id = R.drawable.bluewall2),
             contentDescription = "blue wall",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize(),

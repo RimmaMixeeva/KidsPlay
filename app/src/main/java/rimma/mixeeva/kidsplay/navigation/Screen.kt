@@ -23,4 +23,10 @@ sealed interface Screen {
     @Serializable
     data object KidAccountScreen: Screen
 
+    @Serializable
+    data object GiftScreen: Screen
+
+    @Serializable
+    data object AchievementScreen: Screen
+
 }

@@ -1,7 +1,19 @@
 package rimma.mixeeva.kidsplay.screens
 
 
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.util.Log
+import android.view.View
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,11 +26,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,18 +49,43 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import rimma.mixeeva.kidsplay.MainViewModel
 import rimma.mixeeva.kidsplay.R
+import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 import rimma.mixeeva.kidsplay.screens.components.Characteristic
+import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 
 
 @Composable
 fun KidAccountScreen(viewModel: MainViewModel) {
+    var wasAccountRegistered by remember { mutableStateOf(false) }
+    var enableAnimation by remember { mutableStateOf(false) }
+    val animateValue by animateFloatAsState(targetValue = if (enableAnimation) 0f else 360f,
+        animationSpec = repeatable(
+            iterations = 1,
+            animation = tween(durationMillis = 300, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        finishedListener = {
+            viewModel.navigator.navController?.navigate(Screen.PlayGroundScreen) {
+                popUpTo(Screen.GreetingScreen)
+            }
+        })
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        wasAccountRegistered = viewModel.wasAccountRegistered()
+    }
 
     Box {
         Image(
@@ -52,46 +99,40 @@ fun KidAccountScreen(viewModel: MainViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 100.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                AutoResizedText(
-                    text = "ID2344325",
-                    size = 20.sp,
-                    color = Color.Black,
-                    hasShadow = false
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .shadow(elevation = 8.dp, shape = CircleShape)
-                    .clickable {
-                    }
-            ) {
-                Image(
-                    painter = painterResource(viewModel.chosenAvatar.value!!),
-                    contentDescription = "Выбранный аватар",
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .clip(CircleShape)
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop
-                )
-            }
-            AutoResizedText(
-                text = viewModel.chosenNickname.value,
-                size = 50.sp,
-                color = Color.White
-            )
+            Spacer(modifier = Modifier.height(20.dp))
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .fillMaxHeight(0.9f),
+                    .fillMaxWidth(0.8f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Box(
+                    modifier = Modifier
+                        .shadow(elevation = 8.dp, shape = CircleShape)
+                        .padding(bottom = 10.dp)
+                ) {
+                    Image(painter = painterResource(viewModel.chosenAvatar.value!!),
+                        contentDescription = "Выбранный аватар",
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f)
+                            .clip(CircleShape)
+                            .aspectRatio(1f)
+                            .shadow(elevation = 8.dp)
+                            .clickable {
+                                val activity = context as Activity
+                                val rootView = activity.window.decorView.rootView
+                                viewModel.kidsAccountBitmap.value = rootView.getBitmapFromView()
+                            }
+                            .graphicsLayer { rotationZ = animateValue },
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                AutoResizedText(
+                    text = viewModel.chosenNickname.value, size = 50.sp, color = Color.White
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
@@ -110,9 +151,7 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = "200",
-                        size = 30.sp,
-                        color = Color.White
+                        text = "200", size = 30.sp, color = Color.White
                     )
                     Image(
                         painter = painterResource(R.drawable.coin),
@@ -125,9 +164,7 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = "33",
-                        size = 30.sp,
-                        color = Color.White
+                        text = "33", size = 30.sp, color = Color.White
                     )
                 }
 
@@ -140,6 +177,47 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                 Characteristic(15, 20, color = Color.Cyan, name = "Логика")
 
             }
+            Spacer(modifier = Modifier.fillMaxHeight(0.2f))
+
+            if (!wasAccountRegistered) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    IconButton(
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Green,
+                            contentColor = Color.White,
+                            disabledContainerColor = Color.White,
+                            disabledContentColor = Color.LightGray
+                        ),
+                        onClick = {
+                            CoroutineScope(Dispatchers.Default).launch {
+                                viewModel.saveRegistrationInformation()
+                            }
+                            enableAnimation = !enableAnimation
+                        },
+                        modifier = Modifier
+                            .size(60.dp)
+                            .border(2.dp, Color.White, CircleShape),
+
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "finish",
+                            tint = Color.White,
+                            modifier = Modifier.fillMaxSize().padding(5.dp)
+                        )
+                    }
+                }
+            }
         }
     }
+}
+
+fun View.getBitmapFromView(): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    draw(canvas)
+    return bitmap
 }

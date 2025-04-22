@@ -11,9 +11,11 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
+import rimma.mixeeva.kidsplay.screens.AchievementScreen
 import rimma.mixeeva.kidsplay.screens.ChooseAvatarScreen
 import rimma.mixeeva.kidsplay.screens.ChooseNicknameScreen
 import rimma.mixeeva.kidsplay.screens.ColorGameScreen
+import rimma.mixeeva.kidsplay.screens.GiftScreen
 import rimma.mixeeva.kidsplay.screens.GreetingScreen
 import rimma.mixeeva.kidsplay.screens.KidAccountScreen
 import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
@@ -43,13 +45,10 @@ class MainActivity : ComponentActivity() {
             KidsPlayTheme {
                 NavHost(navController = controller, startDestination = Screen.GreetingScreen) {
                     composable<Screen.GreetingScreen> {
-                        GreetingScreen(
-                            onPlay = { navigator.navigate(Screen.ChooseAvatarScreen) },
-                            onParent = {}
-                        )
+                        GreetingScreen(viewModel = mainViewModel)
                     }
                     composable<Screen.PlayGroundScreen> {
-                        PlaygroundScreen(colorPlay = { navigator.navigate(Screen.ColorGameScreen) })
+                        PlaygroundScreen(mainViewModel)
                     }
                     composable<Screen.ColorGameScreen> {
                         ColorGameScreen()
@@ -62,6 +61,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.KidAccountScreen> {
                         KidAccountScreen(mainViewModel)
+                    }
+                    composable<Screen.GiftScreen> {
+                        GiftScreen(mainViewModel)
+                    }
+                    composable<Screen.AchievementScreen> {
+                        AchievementScreen(mainViewModel)
                     }
 
                 }
