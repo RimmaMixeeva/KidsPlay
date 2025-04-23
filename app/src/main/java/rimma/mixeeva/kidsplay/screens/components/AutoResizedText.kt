@@ -3,6 +3,7 @@ package rimma.mixeeva.kidsplay.screens.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -26,7 +28,11 @@ fun AutoResizedText(
     size: TextUnit,
     modifier: Modifier = Modifier,
     color: Color,
-    hasShadow: Boolean = true
+    hasShadow: Boolean = true,
+    weight: FontWeight = FontWeight.Normal,
+    align: TextAlign = TextAlign.Unspecified,
+    softWrap: Boolean = false
+
 ) {
     var resizedTextStyle by remember {
         mutableStateOf(
@@ -45,15 +51,17 @@ fun AutoResizedText(
         )
     }
     Text(
+        textAlign = align,
         text = text,
         modifier = modifier,
-        softWrap = false,
+        softWrap = softWrap,
         onTextLayout = { result ->
             if (result.hasVisualOverflow) {
                 resizedTextStyle = resizedTextStyle.copy(
                     fontSize = resizedTextStyle.fontSize * 0.95
                 )}
         },
-        style = resizedTextStyle
+        style = resizedTextStyle,
+        fontWeight = weight
     )
 }

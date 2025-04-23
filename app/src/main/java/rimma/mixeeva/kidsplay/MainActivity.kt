@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import dagger.hilt.android.AndroidEntryPoint
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
@@ -19,6 +20,8 @@ import rimma.mixeeva.kidsplay.screens.GiftScreen
 import rimma.mixeeva.kidsplay.screens.GreetingScreen
 import rimma.mixeeva.kidsplay.screens.KidAccountScreen
 import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
+import rimma.mixeeva.kidsplay.screens.AchievementInfoScreen
+import rimma.mixeeva.kidsplay.screens.GiftInfoScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
 
@@ -65,10 +68,32 @@ class MainActivity : ComponentActivity() {
                     composable<Screen.GiftScreen> {
                         GiftScreen(mainViewModel)
                     }
+                    composable<Screen.GiftInfoScreen> {
+                        val args = it.toRoute<Screen.GiftInfoScreen>()
+                        GiftInfoScreen(
+                            title = args.title,
+                            description = args.description,
+                            executor = args.executor,
+                            viewModel = mainViewModel,
+                            id = args.id,
+                            intelligence = args.intelligence,
+                            attentiveness = args.attentiveness,
+                            reaction = args.reaction,
+                            logic = args.logic,
+                            coins = args.coins,
+                        )
+                    }
                     composable<Screen.AchievementScreen> {
                         AchievementScreen(mainViewModel)
                     }
-
+                    composable<Screen.AchievementInfoScreen> {
+                        val args = it.toRoute<Screen.AchievementInfoScreen>()
+                        AchievementInfoScreen(
+                            title = args.title,
+                            condition = args.condition,
+                            description = args.description
+                        )
+                    }
                 }
             }
         }
@@ -76,7 +101,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.destroy() // Освобождение ресурсов
+        mediaPlayer.destroy()
         navigator.clear()
     }
 }

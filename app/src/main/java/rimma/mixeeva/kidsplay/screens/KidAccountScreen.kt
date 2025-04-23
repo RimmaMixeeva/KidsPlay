@@ -151,7 +151,7 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = "200", size = 30.sp, color = Color.White
+                        text = viewModel.experience.value.toString(), size = 30.sp, color = Color.White
                     )
                     Image(
                         painter = painterResource(R.drawable.coin),
@@ -164,17 +164,17 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = "33", size = 30.sp, color = Color.White
+                        text = viewModel.coins.value.toString(), size = 30.sp, color = Color.White
                     )
                 }
 
-                Characteristic(10, 30, color = Color.Green, name = "Интеллект")
+                Characteristic(viewModel.intelligence.value, 30, color = Color.Green, name = "Интеллект")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(9, 90, color = Color.Magenta, name = "Внимательность")
+                Characteristic(viewModel.attentiveness.value, 90, color = Color.Magenta, name = "Внимательность")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(15, 20, color = Color.Yellow, name = "Реакция")
+                Characteristic(viewModel.reaction.value, 20, color = Color.Yellow, name = "Реакция")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(15, 20, color = Color.Cyan, name = "Логика")
+                Characteristic(viewModel.logic.value, 20, color = Color.Cyan, name = "Логика")
 
             }
             Spacer(modifier = Modifier.fillMaxHeight(0.2f))
