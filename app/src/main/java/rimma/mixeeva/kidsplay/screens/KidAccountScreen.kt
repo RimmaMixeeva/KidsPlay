@@ -39,7 +39,9 @@ import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,11 +65,10 @@ import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 import rimma.mixeeva.kidsplay.screens.components.Characteristic
-import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 
 
 @Composable
-fun KidAccountScreen(viewModel: MainViewModel) {
+fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
     var wasAccountRegistered by remember { mutableStateOf(false) }
     var enableAnimation by remember { mutableStateOf(false) }
     val animateValue by animateFloatAsState(targetValue = if (enableAnimation) 0f else 360f,
@@ -81,7 +82,18 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                 popUpTo(Screen.GreetingScreen)
             }
         })
-    val context = LocalContext.current
+    Log.d("TEST5", "NICK - $nick")
+    Log.d("TEST5", "Avatar - $ava")
+
+    val nickname by nick?.let { mutableStateOf(it) } ?: viewModel.nickname.collectAsState()
+    val avatar by ava?.let { mutableIntStateOf(it) } ?: viewModel.avatar.collectAsState()
+    val experience by viewModel.experience.collectAsState()
+    val coins by viewModel.coins.collectAsState()
+    val intelligence by viewModel.intelligence.collectAsState()
+    val attentiveness by viewModel.attentiveness.collectAsState()
+    val logic by viewModel.logic.collectAsState()
+    val reaction by viewModel.reaction.collectAsState()
+
 
     LaunchedEffect(Unit) {
         wasAccountRegistered = viewModel.wasAccountRegistered()
@@ -114,24 +126,25 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                         .shadow(elevation = 8.dp, shape = CircleShape)
                         .padding(bottom = 10.dp)
                 ) {
-                    Image(painter = painterResource(viewModel.chosenAvatar.value!!),
+                    if (avatar != null)
+                    Image(painter = painterResource(avatar!!),
                         contentDescription = "Выбранный аватар",
                         modifier = Modifier
                             .fillMaxWidth(0.6f)
                             .clip(CircleShape)
                             .aspectRatio(1f)
                             .shadow(elevation = 8.dp)
-                            .clickable {
-                                val activity = context as Activity
-                                val rootView = activity.window.decorView.rootView
-                                viewModel.kidsAccountBitmap.value = rootView.getBitmapFromView()
-                            }
+//                            .clickable {
+//                                val activity = context as Activity
+//                                val rootView = activity.window.decorView.rootView
+//                                viewModel.kidsAccountBitmap.value = rootView.getBitmapFromView()
+//                            }
                             .graphicsLayer { rotationZ = animateValue },
                         contentScale = ContentScale.Crop
                     )
                 }
                 AutoResizedText(
-                    text = viewModel.chosenNickname.value, size = 50.sp, color = Color.White
+                    text = nickname ?: "", size = 50.sp, color = Color.White
                 )
                 Row(
                     modifier = Modifier
@@ -151,7 +164,7 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = viewModel.experience.value.toString(), size = 30.sp, color = Color.White
+                        text = (experience?:0).toString(), size = 30.sp, color = Color.White
                     )
                     Image(
                         painter = painterResource(R.drawable.coin),
@@ -164,17 +177,17 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                     )
 
                     AutoResizedText(
-                        text = viewModel.coins.value.toString(), size = 30.sp, color = Color.White
+                        text = (coins?:0).toString(), size = 30.sp, color = Color.White
                     )
                 }
 
-                Characteristic(viewModel.intelligence.value, 30, color = Color.Green, name = "Интеллект")
+                Characteristic(intelligence ?: 0, 30, color = Color.Green, name = "Интеллект")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(viewModel.attentiveness.value, 90, color = Color.Magenta, name = "Внимательность")
+                Characteristic(attentiveness ?: 0, 90, color = Color.Magenta, name = "Внимательность")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(viewModel.reaction.value, 20, color = Color.Yellow, name = "Реакция")
+                Characteristic(reaction ?: 0, 20, color = Color.Yellow, name = "Реакция")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(viewModel.logic.value, 20, color = Color.Cyan, name = "Логика")
+                Characteristic(logic ?: 0, 20, color = Color.Cyan, name = "Логика")
 
             }
             Spacer(modifier = Modifier.fillMaxHeight(0.2f))
@@ -193,7 +206,7 @@ fun KidAccountScreen(viewModel: MainViewModel) {
                         ),
                         onClick = {
                             CoroutineScope(Dispatchers.Default).launch {
-                                viewModel.saveRegistrationInformation()
+                                viewModel.saveRegistrationInformation(avatar!!, nickname!!)
                             }
                             enableAnimation = !enableAnimation
                         },
@@ -215,9 +228,9 @@ fun KidAccountScreen(viewModel: MainViewModel) {
     }
 }
 
-fun View.getBitmapFromView(): Bitmap {
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    draw(canvas)
-    return bitmap
-}
+//fun View.getBitmapFromView(): Bitmap {
+//    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+//    val canvas = Canvas(bitmap)
+//    draw(canvas)
+//    return bitmap
+//}

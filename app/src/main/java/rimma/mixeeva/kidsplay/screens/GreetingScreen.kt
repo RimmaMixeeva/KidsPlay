@@ -95,7 +95,7 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
             Column {
                 GreetingScreenButton(
                     onClick = {
-                        if (wasAccountRegistered) viewModel.navigator.navigate(Screen.KidAccountScreen)
+                        if (wasAccountRegistered) viewModel.navigator.navigate(Screen.KidAccountScreen())
                         else viewModel.playSound(R.raw.blocked)
                     },
                     wasAccountRegistered = wasAccountRegistered,

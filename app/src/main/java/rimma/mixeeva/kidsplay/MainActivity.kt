@@ -60,10 +60,12 @@ class MainActivity : ComponentActivity() {
                         ChooseAvatarScreen(mainViewModel)
                     }
                     composable<Screen.ChooseNicknameScreen> {
-                        ChooseNicknameScreen(mainViewModel)
+                        val args = it.toRoute<Screen.ChooseNicknameScreen>()
+                        ChooseNicknameScreen(mainViewModel, args.avatar)
                     }
                     composable<Screen.KidAccountScreen> {
-                        KidAccountScreen(mainViewModel)
+                        val args = it.toRoute<Screen.KidAccountScreen>()
+                        KidAccountScreen(mainViewModel, args.avatar, args.nickname)
                     }
                     composable<Screen.GiftScreen> {
                         GiftScreen(mainViewModel)
@@ -71,16 +73,8 @@ class MainActivity : ComponentActivity() {
                     composable<Screen.GiftInfoScreen> {
                         val args = it.toRoute<Screen.GiftInfoScreen>()
                         GiftInfoScreen(
-                            title = args.title,
-                            description = args.description,
-                            executor = args.executor,
                             viewModel = mainViewModel,
                             id = args.id,
-                            intelligence = args.intelligence,
-                            attentiveness = args.attentiveness,
-                            reaction = args.reaction,
-                            logic = args.logic,
-                            coins = args.coins,
                         )
                     }
                     composable<Screen.AchievementScreen> {
@@ -89,9 +83,8 @@ class MainActivity : ComponentActivity() {
                     composable<Screen.AchievementInfoScreen> {
                         val args = it.toRoute<Screen.AchievementInfoScreen>()
                         AchievementInfoScreen(
-                            title = args.title,
-                            condition = args.condition,
-                            description = args.description
+                           viewModel = mainViewModel,
+                            id = args.id
                         )
                     }
                 }

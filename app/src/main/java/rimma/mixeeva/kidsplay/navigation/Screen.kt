@@ -1,9 +1,6 @@
 package rimma.mixeeva.kidsplay.navigation
 
 import kotlinx.serialization.Serializable
-import rimma.mixeeva.kidsplay.data.objects.Achievement
-import rimma.mixeeva.kidsplay.data.objects.Gift
-import java.util.concurrent.Executor
 
 @Serializable
 sealed interface Screen {
@@ -21,10 +18,15 @@ sealed interface Screen {
     data object ChooseAvatarScreen : Screen
 
     @Serializable
-    data object ChooseNicknameScreen : Screen
+    data class ChooseNicknameScreen(
+        val avatar: Int
+    ) : Screen
 
     @Serializable
-    data object KidAccountScreen : Screen
+    data class KidAccountScreen(
+        val avatar: Int? = null,
+        val nickname: String? = null
+    ) : Screen
 
     @Serializable
     data object GiftScreen : Screen
@@ -34,23 +36,12 @@ sealed interface Screen {
 
     @Serializable
     data class AchievementInfoScreen(
-        val title: String,
-        var condition: String,
-        var description: String
+        val id: Int
     ) : Screen
 
     @Serializable
     data class GiftInfoScreen(
-        val title: String,
-        var condition: String,
-        var description: String,
-        var executor: String?,
         var id: Int,
-        var intelligence: Int = 0,
-        var attentiveness: Int = 0,
-        var reaction: Int = 0,
-        var logic: Int = 0,
-        var coins: Int = 0,
     ) : Screen
 
 }

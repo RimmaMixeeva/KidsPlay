@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,16 +22,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import rimma.mixeeva.kidsplay.MainViewModel
 import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 
 @Composable
 fun AchievementInfoScreen(
-    title: String,
-    condition: String,
-    description: String
+   viewModel: MainViewModel,
+   id: Int
 ) {
+    val achievement = viewModel.achievements.collectAsState().value.first { it.id == id }
     Box(contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.bluewall),
@@ -49,7 +51,7 @@ fun AchievementInfoScreen(
             .fillMaxHeight(0.4f)) {
             AutoResizedText(
                 align = TextAlign.Center,
-                text = "\"" + title + "\"",
+                text = "\"" + achievement.title + "\"",
                 size = 30.sp,
                 color = Color.Black,
                 hasShadow = false,
@@ -64,7 +66,7 @@ fun AchievementInfoScreen(
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left
                 )
                 AutoResizedText(
-                    text = condition, size = 24.sp, color = Color.Black, hasShadow = false,
+                    text = achievement.condition, size = 24.sp, color = Color.Black, hasShadow = false,
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                 )
                 Spacer(modifier = Modifier.height(10.dp))
@@ -73,7 +75,7 @@ fun AchievementInfoScreen(
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left
                 )
                 AutoResizedText(
-                    text = description, size = 24.sp, color = Color.Black, hasShadow = false,
+                    text = achievement.description, size = 24.sp, color = Color.Black, hasShadow = false,
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                 )
 

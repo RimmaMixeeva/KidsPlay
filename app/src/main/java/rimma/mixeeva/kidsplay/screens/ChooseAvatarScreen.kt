@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,8 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 fun ChooseAvatarScreen(viewModel: MainViewModel) {
     var choiceEnabled by remember { mutableStateOf(true) }
     LaunchedEffect(Unit) { choiceEnabled = true }
+
+    val avatar: MutableState<Int?> = remember { mutableStateOf(null) }
 
     Box(
         modifier = Modifier
@@ -121,7 +124,7 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
                             .padding(10.dp)
                             .border(
                                 4.dp,
-                                if (viewModel.chosenAvatar.value == list.value[i]) Color.Green else Color.LightGray,
+                                if (avatar.value == list.value[i]) Color.Green else Color.LightGray,
                                 CircleShape
                             )
                             .clickable(
@@ -129,11 +132,11 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
                                 indication = null
                             ) {
                                 if (choiceEnabled) {
-                                    if (viewModel.chosenAvatar.value == list.value[i]) {
-                                        viewModel.chosenAvatar.value = null
+                                    if (avatar.value == list.value[i]) {
+                                        avatar.value = null
                                     } else {
                                         viewModel.playSound(R.raw.choice)
-                                        viewModel.chosenAvatar.value = list.value[i]
+                                        avatar.value = list.value[i]
                                     }
                                 }
                             }
@@ -161,17 +164,17 @@ fun ChooseAvatarScreen(viewModel: MainViewModel) {
         ) {
             IconButton(
                 onClick = {
-                    viewModel.navigator.navigate(Screen.ChooseNicknameScreen)
+                    viewModel.navigator.navigate(Screen.ChooseNicknameScreen(avatar.value!!))
                     choiceEnabled = false
                 },
                 modifier = Modifier
                     .size(80.dp),
-                enabled = viewModel.chosenAvatar.value != null
+                enabled = avatar.value != null
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = "next",
-                    tint = if (viewModel.chosenAvatar.value != null) Color.Green else Color.Gray,
+                    tint = if (avatar.value != null) Color.Green else Color.Gray,
                     modifier = Modifier.fillMaxSize()
                 )
             }

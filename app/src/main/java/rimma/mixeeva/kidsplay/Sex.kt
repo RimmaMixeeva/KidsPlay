@@ -1,8 +1,8 @@
 package rimma.mixeeva.kidsplay
 
 enum class Sex(
-    value: String
+    sex: String
 ) {
-    MALE("FEMALE"),
+    MALE("MALE"),
     FEMALE("FEMALE")
 }

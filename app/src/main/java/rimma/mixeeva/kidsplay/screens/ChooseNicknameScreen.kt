@@ -22,6 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +42,9 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 
 
 @Composable
-fun ChooseNicknameScreen(viewModel: MainViewModel) {
+fun ChooseNicknameScreen(viewModel: MainViewModel, avatar: Int? = null) {
+    var nickname by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .background(Color.White)
@@ -68,16 +74,16 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                         CircleShape
                     )
             ) {
-                if (viewModel.chosenAvatar.value != null){
-                Image(
-                    painter = painterResource(viewModel.chosenAvatar.value!!),
-                    contentDescription = "Выбранный аватар",
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .clip(CircleShape)
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop
-                )
+                if (avatar != null) {
+                    Image(
+                        painter = painterResource(avatar),
+                        contentDescription = "Выбранный аватар",
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f)
+                            .clip(CircleShape)
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop
+                    )
                 }
             }
             Box(
@@ -87,9 +93,9 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                     .border(2.dp, Color.LightGray, CircleShape)
             ) {
                 BasicTextField(
-                    value = viewModel.chosenNickname.value,
+                    value = nickname,
                     onValueChange = { newValue ->
-                        viewModel.chosenNickname.value = newValue
+                        nickname = newValue
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -103,7 +109,7 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                     singleLine = true,
                     decorationBox = { innerTextField ->
                         Box(contentAlignment = Alignment.CenterStart) {
-                            if (viewModel.chosenNickname.value.isEmpty()) {
+                            if (nickname.isEmpty()) {
                                 Text(
                                     "Имя",
                                     fontSize = 24.sp,
@@ -121,7 +127,9 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
         }
 
         Row(
-            modifier = Modifier.padding(horizontal = 50.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(horizontal = 50.dp)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
@@ -136,22 +144,24 @@ fun ChooseNicknameScreen(viewModel: MainViewModel) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "back",
-                    tint = if (viewModel.chosenAvatar.value != null) Color.Green else Color.Gray,
+                    tint = Color.Green,
                     modifier = Modifier.fillMaxSize()
                 )
             }
             IconButton(
                 onClick = {
-                    viewModel.navigator.navigate(Screen.KidAccountScreen)
+                    if (avatar != null) {
+                        viewModel.navigator.navigate(Screen.KidAccountScreen(avatar, nickname))
+                    }
                 },
                 modifier = Modifier
                     .size(80.dp),
-                enabled = viewModel.chosenNickname.value.isNotEmpty()
+                enabled = nickname.isNotEmpty()
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
                     contentDescription = "next",
-                    tint = if (viewModel.chosenNickname.value.isNotEmpty()) Color.Green else Color.Gray,
+                    tint = if (nickname.isNotEmpty()) Color.Green else Color.Gray,
                     modifier = Modifier.fillMaxSize()
                 )
             }
