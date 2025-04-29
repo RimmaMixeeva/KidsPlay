@@ -1,20 +1,13 @@
 package rimma.mixeeva.kidsplay.screens
 
 
-import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.util.Log
-import android.view.View
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,13 +22,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,7 +43,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,7 +58,6 @@ import rimma.mixeeva.kidsplay.screens.components.Characteristic
 
 @Composable
 fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
-    var wasAccountRegistered by remember { mutableStateOf(false) }
     var enableAnimation by remember { mutableStateOf(false) }
     val animateValue by animateFloatAsState(targetValue = if (enableAnimation) 0f else 360f,
         animationSpec = repeatable(
@@ -82,8 +70,6 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                 popUpTo(Screen.GreetingScreen)
             }
         })
-    Log.d("TEST5", "NICK - $nick")
-    Log.d("TEST5", "Avatar - $ava")
 
     val nickname by nick?.let { mutableStateOf(it) } ?: viewModel.nickname.collectAsState()
     val avatar by ava?.let { mutableIntStateOf(it) } ?: viewModel.avatar.collectAsState()
@@ -94,10 +80,6 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
     val logic by viewModel.logic.collectAsState()
     val reaction by viewModel.reaction.collectAsState()
 
-
-    LaunchedEffect(Unit) {
-        wasAccountRegistered = viewModel.wasAccountRegistered()
-    }
 
     Box {
         Image(
@@ -134,11 +116,6 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                             .clip(CircleShape)
                             .aspectRatio(1f)
                             .shadow(elevation = 8.dp)
-//                            .clickable {
-//                                val activity = context as Activity
-//                                val rootView = activity.window.decorView.rootView
-//                                viewModel.kidsAccountBitmap.value = rootView.getBitmapFromView()
-//                            }
                             .graphicsLayer { rotationZ = animateValue },
                         contentScale = ContentScale.Crop
                     )
@@ -192,7 +169,7 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
             }
             Spacer(modifier = Modifier.fillMaxHeight(0.2f))
 
-            if (!wasAccountRegistered) {
+            if (ava != null && nick != null) {
                 Row(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Bottom
@@ -227,10 +204,3 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
         }
     }
 }
-
-//fun View.getBitmapFromView(): Bitmap {
-//    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//    val canvas = Canvas(bitmap)
-//    draw(canvas)
-//    return bitmap
-//}

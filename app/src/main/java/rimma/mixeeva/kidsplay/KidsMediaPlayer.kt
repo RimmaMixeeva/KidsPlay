@@ -11,11 +11,12 @@ class KidsMediaPlayer @Inject constructor(@ApplicationContext val context: Conte
 
     private var mediaPlayer: MediaPlayer? = null
 
-    fun playSong(song: Int, isLooping: Boolean){
+    fun playSong(song: Int, isLooping: Boolean, volume: Float = 1f){
         if (mediaPlayer != null){
             destroy()
         }
         mediaPlayer = MediaPlayer.create(context, song)
+        mediaPlayer?.setVolume(volume, volume)
         mediaPlayer?.isLooping = isLooping // Зацикливать музыку
         mediaPlayer?.start()
     }

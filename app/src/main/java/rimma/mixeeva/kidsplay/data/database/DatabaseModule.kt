@@ -32,4 +32,8 @@ class DatabaseModule {
     @Provides
     fun provideAchievementsDao(database: AppDatabase) = database.achievementDao()
 
+    @Singleton
+    @Provides
+    fun provideColorGameLevelDao(database: AppDatabase) = database.colorGameLevelDao()
+
 }

@@ -1,22 +1,17 @@
 package rimma.mixeeva.kidsplay
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
-import rimma.mixeeva.kidsplay.data.database.AchievementsDao
-import rimma.mixeeva.kidsplay.data.database.GiftDao
+import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import javax.inject.Inject
 
@@ -26,7 +21,8 @@ class MainViewModel @Inject constructor(
     var kidsMediaPlayer: KidsMediaPlayer,
     var userPreferencesRepository: IUserPreferencesRepository,
     var giftDao: GiftDao,
-    var achievementsDao: AchievementsDao
+    var achievementsDao: AchievementsDao,
+    var mediaPlayer: KidsMediaPlayer
 ) : ViewModel() {
 
     var chosenSex: MutableState<Sex?> = mutableStateOf(Sex.MALE)
@@ -44,8 +40,6 @@ class MainViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = null
         )
-
-    var kidsAccountBitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
     var gifts = giftDao.getAll().stateIn(
         scope = viewModelScope,
@@ -178,6 +172,10 @@ class MainViewModel @Inject constructor(
             UserPreferencesKeys.FIELD_EXPERIENCE,
             (experience.value ?: 0) + nIntelligence + nAttentiveness + nReaction + nLogic
         )
+    }
+
+    fun changeMusicToColorGameSong(){
+        mediaPlayer.destroy()
     }
 
 }

@@ -44,4 +44,20 @@ sealed interface Screen {
         var id: Int,
     ) : Screen
 
+    @Serializable
+    data object ColorGameFirstLevelsScreen : Screen
+
+    @Serializable
+    data object ColorGameSecondLevelsScreen : Screen
+
+    @Serializable
+    data object ColorGameThirdLevelsScreen : Screen
+
+    @Serializable
+    data object ColorGameFourthLevelsScreen : Screen
+
+    @Serializable
+    data class ColorLevelScreen(
+        var id: Int
+    ) : Screen
 }

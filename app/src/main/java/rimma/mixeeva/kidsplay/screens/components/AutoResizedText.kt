@@ -34,7 +34,7 @@ fun AutoResizedText(
     softWrap: Boolean = false
 
 ) {
-    var resizedTextStyle by remember {
+    var resizedTextStyle by remember(text, size, color, hasShadow, weight) {
         mutableStateOf(
             TextStyle(
                 color = color,

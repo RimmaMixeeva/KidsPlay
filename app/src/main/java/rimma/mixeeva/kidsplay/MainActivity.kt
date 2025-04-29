@@ -15,13 +15,18 @@ import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.screens.AchievementScreen
 import rimma.mixeeva.kidsplay.screens.ChooseAvatarScreen
 import rimma.mixeeva.kidsplay.screens.ChooseNicknameScreen
-import rimma.mixeeva.kidsplay.screens.ColorGameScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameScreen
 import rimma.mixeeva.kidsplay.screens.GiftScreen
 import rimma.mixeeva.kidsplay.screens.GreetingScreen
 import rimma.mixeeva.kidsplay.screens.KidAccountScreen
 import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
 import rimma.mixeeva.kidsplay.screens.AchievementInfoScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorLevelScreen
 import rimma.mixeeva.kidsplay.screens.GiftInfoScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFirstLevelsScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFourthLevelsScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameSecondLevelsScreen
+import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameThirdLevelsScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
 
@@ -34,7 +39,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
 
-    val mainViewModel by viewModels<MainViewModel>()
+    private val mainViewModel by viewModels<MainViewModel>()
+    private val colorGameViewModel by viewModels<ColorGameViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +60,7 @@ class MainActivity : ComponentActivity() {
                         PlaygroundScreen(mainViewModel)
                     }
                     composable<Screen.ColorGameScreen> {
-                        ColorGameScreen()
+                        ColorGameScreen(colorGameViewModel)
                     }
                     composable<Screen.ChooseAvatarScreen> {
                         ChooseAvatarScreen(mainViewModel)
@@ -87,6 +93,23 @@ class MainActivity : ComponentActivity() {
                             id = args.id
                         )
                     }
+                    composable<Screen.ColorGameFirstLevelsScreen> {
+                        ColorGameFirstLevelsScreen(colorGameViewModel)
+                    }
+                    composable<Screen.ColorGameSecondLevelsScreen> {
+                        ColorGameSecondLevelsScreen(colorGameViewModel)
+                    }
+                    composable<Screen.ColorGameThirdLevelsScreen> {
+                        ColorGameThirdLevelsScreen(colorGameViewModel)
+                    }
+                    composable<Screen.ColorGameFourthLevelsScreen> {
+                        ColorGameFourthLevelsScreen(colorGameViewModel)
+                    }
+                    composable<Screen.ColorLevelScreen> {
+                        val args = it.toRoute<Screen.AchievementInfoScreen>()
+                        ColorLevelScreen(colorGameViewModel, args.id)
+                    }
+
                 }
             }
         }
