@@ -5,6 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,10 +34,13 @@ import rimma.mixeeva.kidsplay.screens.PlaygroundScreen
 import rimma.mixeeva.kidsplay.screens.AchievementInfoScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorLevelScreen
 import rimma.mixeeva.kidsplay.screens.GiftInfoScreen
+import rimma.mixeeva.kidsplay.screens.ShowGetAchievement
+import rimma.mixeeva.kidsplay.screens.YouReceivedGiftScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFirstLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFourthLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameSecondLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameThirdLevelsScreen
+import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
 
@@ -58,6 +72,7 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.PlayGroundScreen> {
                         PlaygroundScreen(mainViewModel)
+//                        YouReceivedGiftScreen(mainViewModel)
                     }
                     composable<Screen.ColorGameScreen> {
                         ColorGameScreen(colorGameViewModel)
@@ -89,7 +104,7 @@ class MainActivity : ComponentActivity() {
                     composable<Screen.AchievementInfoScreen> {
                         val args = it.toRoute<Screen.AchievementInfoScreen>()
                         AchievementInfoScreen(
-                           viewModel = mainViewModel,
+                            viewModel = mainViewModel,
                             id = args.id
                         )
                     }
@@ -107,10 +122,20 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.ColorLevelScreen> {
                         val args = it.toRoute<Screen.AchievementInfoScreen>()
-                        ColorLevelScreen(colorGameViewModel, args.id)
+                        ColorLevelScreen(colorGameViewModel, mainViewModel, args.id)
                     }
-
+                    composable<Screen.YouReceivedGiftScreen> {
+                        YouReceivedGiftScreen(mainViewModel)
+                    }
                 }
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 100.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                ShowGetAchievement(mainViewModel)
             }
         }
     }

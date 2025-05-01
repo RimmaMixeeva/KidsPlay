@@ -12,17 +12,31 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "app_database"
-        )
-            .createFromAsset("database/app_database.db")
-            .fallbackToDestructiveMigration(false)
-    .build()
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        val dbFile = context.getDatabasePath("app_database.db")
+
+        // Если БД нет то копируем из assets, иначе используем существующую
+        return if (!dbFile.exists()) {
+            Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "app_database.db"
+            )
+                .createFromAsset("database/app_database.db")
+                .fallbackToDestructiveMigration(false)
+                .build()
+        } else {
+            Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "app_database.db"
+            )
+                .fallbackToDestructiveMigration(false)
+                .build()
+        }
+    }
 
     @Singleton
     @Provides

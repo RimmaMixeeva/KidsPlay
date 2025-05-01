@@ -69,7 +69,7 @@ fun GiftScreen(viewModel: MainViewModel) {
                         contentDescription = "ribbon"
                     )
                     AutoResizedText(
-                        text = item.title + item.id,
+                        text = item.title,
                         modifier = Modifier
                             .fillMaxWidth(0.9f),
                         size = 30.sp,

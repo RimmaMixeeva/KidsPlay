@@ -15,12 +15,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
+import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
+import rimma.mixeeva.kidsplay.data.database.entities.GiftsDB
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.ui.theme.Orange
@@ -33,7 +38,8 @@ class ColorGameViewModel @Inject constructor(
     @ApplicationContext var context: Context,
     val navigator: Navigator,
     val colorGameLevelDao: ColorGameLevelDao,
-    var mediaPlayer: KidsMediaPlayer
+    var mediaPlayer: KidsMediaPlayer,
+    val giftDao: GiftDao,
 ) : ViewModel() {
     val LAST_LEVEL = 60
     val colorList = listOf(
@@ -54,6 +60,11 @@ class ColorGameViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
+    var gifts = giftDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
     //Информациия о текущем открытом уровне
     var gNumberOfSubLevels = mutableIntStateOf(0)
     var gCurrentSubLevelsCompleted = mutableIntStateOf(0)
@@ -86,7 +97,7 @@ class ColorGameViewModel @Inject constructor(
 
     }
 
-    suspend fun subLevelCompleted(levelNumber: Int, guessedCorrectly: Boolean) {
+    suspend fun subLevelCompleted(levelNumber: Int, guessedCorrectly: Boolean, activateAchievement: (Int) -> Unit) {
         val bdColorLevel = colorGameLevels.value.first { it.levelNumber == levelNumber }
         //меняем цвет текста
         if (bdColorLevel.isColorPhrased) {
@@ -99,7 +110,7 @@ class ColorGameViewModel @Inject constructor(
             withContext(Dispatchers.Main) {
                 navigator.popBackStack()
             }
-            finishLevel(levelNumber)
+            finishLevel(levelNumber, activateAchievement)
             //завершаем уровень игры, выдаём награды
         } else {
             //переходим на следующий подуровень
@@ -112,8 +123,8 @@ class ColorGameViewModel @Inject constructor(
         }
     }
 
-    suspend fun finishLevel(levelNumber: Int? = null) {
-        if (levelNumber != null) {
+    suspend fun finishLevel(levelNumber: Int? = null, activateAchievement: (Int) -> Unit) {
+        if (levelNumber != null) { //успешно завершили уровень
             val bdColorLevel = colorGameLevels.value.first { it.levelNumber == levelNumber }
             val numOfAllStars = 3
 
@@ -123,7 +134,29 @@ class ColorGameViewModel @Inject constructor(
 
             if (newStarsAchieved > oldStarsAchieved) { //проверяем получили ли мы больше звезд, чтоб не сбросить хорошие результаты.
                 colorGameLevelDao.updateAll(bdColorLevel.copy(starsAchieved = newStarsAchieved))
+                if (newStarsAchieved == 3) { //если получили три звезды, то также необходимо выдать награду  за уровень, если она полагается
+                    val giftId = colorGameLevels.value.firstOrNull {it.levelNumber == levelNumber}?.gift
+                    if (giftId != null){
+                    giftDao.updateAll(gifts.value.first { it.id == giftId }.copy(opened = true))
+                        withContext(Dispatchers.Main) {
+                            navigator.navigate(Screen.YouReceivedGiftScreen)
+                        }
+                    }
+
+                }
             }
+            //выдаём ачивку за 1й, 10й, 31й и 60й уровень
+            when (levelNumber){
+                1 ->  activateAchievement(2)
+                10 -> activateAchievement(3)
+                31 -> activateAchievement(4)
+                60 -> {
+                    if (colorGameLevels.value.filter { it.starsAchieved == 3 }.size == 60){
+                        activateAchievement(5)
+                    }
+                }
+            }
+
             if (levelNumber != LAST_LEVEL && newStarsAchieved > 0) {
                 colorGameLevelDao.updateAll(colorGameLevels.value.first { it.levelNumber == (levelNumber + 1) }
                     .copy(isLevelOpened = true))

@@ -1,10 +1,15 @@
 package rimma.mixeeva.kidsplay.data.database.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "ColorGameLevels")
+@Entity(
+    tableName = "ColorGameLevels",
+//    foreignKeys = [
+//        ForeignKey(entity = GiftsDB::class, parentColumns = ["id"], childColumns = ["gift"])]
+)
 data class ColorGameLevelDB(
     @PrimaryKey
     val levelNumber: Int,
@@ -15,5 +20,6 @@ data class ColorGameLevelDB(
     val isColorPhrased: Boolean,
     val hasVoiceActing: Boolean,
     var numOfColors: Int,
-    var isLevelOpened: Boolean
+    var isLevelOpened: Boolean,
+    val gift: Int?
 )

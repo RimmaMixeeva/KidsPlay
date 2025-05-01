@@ -25,6 +25,14 @@ class MainViewModel @Inject constructor(
     var mediaPlayer: KidsMediaPlayer
 ) : ViewModel() {
 
+    var currentAchievementToShow: MutableState<Int?> = mutableStateOf(null)
+    suspend fun activateAchievement() {
+        val newAchievements = achievements.value.firstOrNull { it.id == currentAchievementToShow.value }?.copy(obtained = true)
+        if (newAchievements != null) {
+            achievementsDao.updateAll(newAchievements)
+        }
+    }
+
     var chosenSex: MutableState<Sex?> = mutableStateOf(Sex.MALE)
 
     var avatar =
@@ -174,7 +182,7 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun changeMusicToColorGameSong(){
+    fun changeMusicToColorGameSong() {
         mediaPlayer.destroy()
     }
 

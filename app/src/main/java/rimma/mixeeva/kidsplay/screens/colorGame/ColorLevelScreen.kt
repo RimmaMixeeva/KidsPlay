@@ -42,13 +42,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import rimma.mixeeva.kidsplay.ColorGameViewModel
+import rimma.mixeeva.kidsplay.MainViewModel
 import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 import rimma.mixeeva.kidsplay.ui.theme.Orange
 
 
 @Composable
-fun ColorLevelScreen(viewModel: ColorGameViewModel, id: Int) {
+fun ColorLevelScreen(viewModel: ColorGameViewModel, mainViewModel: MainViewModel, id: Int) {
     LaunchedEffect(viewModel.gCurrentSubLevelsCompleted.intValue) {
         if (viewModel.colorGameLevels.value.first { it.levelNumber == id }.hasVoiceActing) {
             TextVoicer.voiceText(
@@ -76,7 +77,7 @@ fun ColorLevelScreen(viewModel: ColorGameViewModel, id: Int) {
             withContext(Dispatchers.Main) {
                 viewModel.navigator.popBackStack()
             }
-            viewModel.finishLevel()
+            viewModel.finishLevel(activateAchievement = {_ -> })
             isTimerRunning = false
         }
     }
@@ -150,7 +151,8 @@ fun ColorLevelScreen(viewModel: ColorGameViewModel, id: Int) {
                                                 CoroutineScope(Dispatchers.Default).launch {
                                                     viewModel.subLevelCompleted(
                                                         id,
-                                                        viewModel.gCurrentColorToGuess.value?.first == viewModel.gColors[i].first
+                                                        viewModel.gCurrentColorToGuess.value?.first == viewModel.gColors[i].first,
+                                                        {achievementId -> mainViewModel.currentAchievementToShow.value = achievementId}
                                                     )
                                                 }
                                                 }

@@ -44,10 +44,12 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.lottie.compose)
 
 
     implementation(libs.android.navigation.libs)

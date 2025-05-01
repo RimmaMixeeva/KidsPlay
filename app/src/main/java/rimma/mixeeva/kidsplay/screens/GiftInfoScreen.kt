@@ -58,7 +58,7 @@ fun GiftInfoScreen(
         ) {
             AutoResizedText(
                 align = TextAlign.Center,
-                text = "\"" + gift.title + gift.id + "\"",
+                text = "\"" + gift.title + "\"",
                 size = 30.sp,
                 color = Color.Black,
                 hasShadow = false,

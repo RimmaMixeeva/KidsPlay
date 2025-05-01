@@ -60,4 +60,9 @@ sealed interface Screen {
     data class ColorLevelScreen(
         var id: Int
     ) : Screen
+
+    @Serializable
+    data object YouReceivedGiftScreen : Screen
+
+
 }

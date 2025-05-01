@@ -69,7 +69,7 @@ fun AchievementScreen(viewModel: MainViewModel) {
                     AutoResizedText(
                         text = "\"${item.title}\"",
                         modifier = Modifier.fillMaxWidth(0.7f),
-                        size = 100.sp,
+                        size = 36.sp,
                         color = Color.Black,
                         hasShadow = false,
                         weight = FontWeight.Bold

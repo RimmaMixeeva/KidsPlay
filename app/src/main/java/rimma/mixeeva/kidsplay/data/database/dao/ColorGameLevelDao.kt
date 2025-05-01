@@ -18,4 +18,5 @@ interface ColorGameLevelDao {
 
     @Update
     suspend fun updateAll(vararg colorGameLevelDB: ColorGameLevelDB)
+
 }

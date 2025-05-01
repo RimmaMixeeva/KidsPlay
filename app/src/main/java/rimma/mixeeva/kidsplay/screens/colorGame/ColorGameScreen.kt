@@ -16,9 +16,13 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,14 +42,16 @@ import rimma.mixeeva.kidsplay.ui.theme.Orange
 
 @Composable
 fun ColorGameScreen(viewModel: ColorGameViewModel) {
+    val gameLevels by viewModel.colorGameLevels.collectAsState()
+    val gifts by viewModel.gifts.collectAsState() //нельзя удалять, иначе во viewmodel список gifts будет empty,
+    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
     Box {
         Image(
             painter = painterResource(id = R.drawable.bluewall2),
             contentDescription = "blue wall",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize(),
-
-            )
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -70,10 +76,12 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .fillMaxWidth(0.7f)
                     .align(Alignment.CenterHorizontally)
                     .border(width = 2.dp, color = DarkGreen)
-                    .clickable { viewModel.navigator.navigate(Screen.ColorGameFirstLevelsScreen) },
+                    .clickable {
+                        viewModel.navigator.navigate(Screen.ColorGameFirstLevelsScreen)
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Stars(1, DarkGreen)
+                Stars(1, DarkGreen, true)
             }
             Spacer(modifier = Modifier.height(20.dp))
             Box(
@@ -83,10 +91,14 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .heightIn(min = 60.dp)
                     .align(Alignment.CenterHorizontally)
                     .border(width = 2.dp, color = DarkYellow)
-                    .clickable { viewModel.navigator.navigate(Screen.ColorGameSecondLevelsScreen)},
+                    .clickable {
+                        if (gameLevels.firstOrNull { it.levelNumber == 16 }?.isLevelOpened == true) {
+                            viewModel.navigator.navigate(Screen.ColorGameSecondLevelsScreen)
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Stars(2, DarkYellow)
+                Stars(2, DarkYellow, (gameLevels.firstOrNull { it.levelNumber == 16 }?.isLevelOpened == true))
             }
             Spacer(modifier = Modifier.height(20.dp))
             Box(
@@ -95,10 +107,14 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .fillMaxWidth(0.7f)
                     .align(Alignment.CenterHorizontally)
                     .border(width = 2.dp, color = DarkOrange)
-                    .clickable {viewModel.navigator.navigate(Screen.ColorGameThirdLevelsScreen) },
+                    .clickable {
+                        if (gameLevels.firstOrNull { it.levelNumber == 31 }?.isLevelOpened == true) {
+                            viewModel.navigator.navigate(Screen.ColorGameThirdLevelsScreen)
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Stars(3, DarkOrange)
+                Stars(3, DarkOrange, (gameLevels.firstOrNull { it.levelNumber == 31 }?.isLevelOpened == true))
             }
             Spacer(modifier = Modifier.height(20.dp))
             Box(
@@ -107,10 +123,14 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .fillMaxWidth(0.7f)
                     .align(Alignment.CenterHorizontally)
                     .border(width = 2.dp, color = DarkRed)
-                    .clickable { viewModel.navigator.navigate(Screen.ColorGameFourthLevelsScreen)},
+                    .clickable {
+                        if (gameLevels.firstOrNull { it.levelNumber == 46 }?.isLevelOpened == true) {
+                            viewModel.navigator.navigate(Screen.ColorGameFourthLevelsScreen)
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Stars(4, DarkRed)
+                Stars(4, DarkRed, (gameLevels.firstOrNull { it.levelNumber == 46 }?.isLevelOpened == true))
             }
         }
     }
@@ -118,26 +138,24 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
 
 
 @Composable
-fun Stars(quantity: Int, darkColor: Color) {
+fun Stars(quantity: Int, darkColor: Color, isLevelUnlocked: Boolean) {
     Row(
         modifier = Modifier.fillMaxWidth(), horizontalArrangement =
         Arrangement.Center
     ) {
-        for (i in 0 until quantity) {
-            Box() {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "finish",
-                    tint = darkColor,
-                    modifier = Modifier.size(54.dp)
-                )
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "finish",
-                    tint = Color.White,
-                    modifier = Modifier.size(50.dp)
-                )
-            }
+        Box() {
+            Icon(
+                imageVector = if (isLevelUnlocked) Icons.Default.PlayArrow else Icons.Default.Lock,
+                contentDescription = "finish",
+                tint = darkColor,
+                modifier = Modifier.size(54.dp)
+            )
+            Icon(
+                imageVector = if (isLevelUnlocked) Icons.Default.PlayArrow else Icons.Default.Lock,
+                contentDescription = "finish",
+                tint = Color.White,
+                modifier = Modifier.size(50.dp)
+            )
         }
     }
 }
