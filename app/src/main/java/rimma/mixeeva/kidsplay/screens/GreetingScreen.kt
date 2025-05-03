@@ -1,7 +1,10 @@
 package rimma.mixeeva.kidsplay.screens
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
@@ -66,20 +71,23 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         ) {
             Column {
                 Row(
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.Start,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     IconButton(
-                        onClick = {},
+                        onClick = {
+                            viewModel.navigator.navigate(Screen.LoginScreen)
+                        },
                         modifier = Modifier
                             .width(70.dp)
-                            .aspectRatio(1f),
+                            .aspectRatio(1f)
+                            .border(width = 2.dp, color = Color.Gray, shape = CircleShape),
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = Icons.Default.AccountCircle,
                             contentDescription = "close icon",
-                            tint = Color.Red,
-                            modifier = Modifier.fillMaxSize()
+                            tint = Color.Gray,
+                            modifier = Modifier.fillMaxSize().background(Color.White)
                         )
                     }
                 }

@@ -41,6 +41,8 @@ import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFourthLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameSecondLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameThirdLevelsScreen
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
+import rimma.mixeeva.kidsplay.screens.parentsPart.LoginScreen
+import rimma.mixeeva.kidsplay.screens.parentsPart.RegistrationScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
 
@@ -55,6 +57,7 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()
     private val colorGameViewModel by viewModels<ColorGameViewModel>()
+    private val parentViewModel by viewModels<ParentViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +75,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.PlayGroundScreen> {
                         PlaygroundScreen(mainViewModel)
-//                        YouReceivedGiftScreen(mainViewModel)
                     }
                     composable<Screen.ColorGameScreen> {
                         ColorGameScreen(colorGameViewModel)
@@ -126,6 +128,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.YouReceivedGiftScreen> {
                         YouReceivedGiftScreen(mainViewModel)
+                    }
+                    composable<Screen.LoginScreen> {
+                        LoginScreen(parentViewModel)
+                    }
+                    composable<Screen.RegistrationScreen> {
+                        RegistrationScreen(parentViewModel)
                     }
                 }
             }

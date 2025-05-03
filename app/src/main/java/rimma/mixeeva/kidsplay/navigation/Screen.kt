@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface Screen {
 
+    //child part
     @Serializable
     data object GreetingScreen : Screen
 
@@ -63,6 +64,13 @@ sealed interface Screen {
 
     @Serializable
     data object YouReceivedGiftScreen : Screen
+
+    //parents part
+    @Serializable
+    data object LoginScreen : Screen
+
+    @Serializable
+    data object RegistrationScreen : Screen
 
 
 }

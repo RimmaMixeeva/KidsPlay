@@ -51,6 +51,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.lottie.compose)
 
+    //retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation(libs.okhttp)
+
 
     implementation(libs.android.navigation.libs)
     implementation(libs.kotlinx.serialization.json)

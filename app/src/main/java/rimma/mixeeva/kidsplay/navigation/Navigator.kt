@@ -20,4 +20,10 @@ class Navigator @Inject constructor() {
     fun popBackStack(){
         navController?.popBackStack()
     }
+    fun navigateToNextAndDeletePreviousScreen(current: Screen, next: Screen){
+        navController?.navigate(next) {
+            popUpTo(current) { inclusive = true }
+        }
+    }
+
 }

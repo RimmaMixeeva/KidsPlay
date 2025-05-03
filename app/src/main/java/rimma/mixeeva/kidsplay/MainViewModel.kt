@@ -1,10 +1,12 @@
 package rimma.mixeeva.kidsplay
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -22,7 +24,8 @@ class MainViewModel @Inject constructor(
     var userPreferencesRepository: IUserPreferencesRepository,
     var giftDao: GiftDao,
     var achievementsDao: AchievementsDao,
-    var mediaPlayer: KidsMediaPlayer
+    var mediaPlayer: KidsMediaPlayer,
+    @ApplicationContext var context: Context
 ) : ViewModel() {
 
     var currentAchievementToShow: MutableState<Int?> = mutableStateOf(null)

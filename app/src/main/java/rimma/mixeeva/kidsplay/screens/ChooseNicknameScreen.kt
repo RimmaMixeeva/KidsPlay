@@ -108,7 +108,7 @@ fun ChooseNicknameScreen(viewModel: MainViewModel, avatar: Int? = null) {
                     ),
                     singleLine = true,
                     decorationBox = { innerTextField ->
-                        Box(contentAlignment = Alignment.CenterStart) {
+                        Box(contentAlignment = Alignment.Center) {
                             if (nickname.isEmpty()) {
                                 Text(
                                     "Имя",

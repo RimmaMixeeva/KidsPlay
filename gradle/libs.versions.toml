@@ -2,6 +2,7 @@
 agp = "8.8.0"
 coilCompose = "3.1.0"
 coilGif = "2.6.0"
+converterGson = "2.11.0"
 datastorePreferences = "1.1.4"
 exoplayerVersion = "2.19.1"
 kotlin = "2.0.0"
@@ -14,6 +15,8 @@ activityCompose = "1.10.1"
 composeBom = "2024.04.01"
 lottieCompose = "6.0.0"
 navVersion = "2.8.9"
+okhttp = "4.12.0"
+retrofit = "2.11.0"
 roomRuntime = "2.7.0"
 serialization = "1.6.3"
 hilt = "2.51.1"
@@ -26,6 +29,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilGif" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 google-exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayerVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
@@ -46,6 +50,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization"}
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
