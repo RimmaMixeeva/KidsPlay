@@ -72,5 +72,12 @@ sealed interface Screen {
     @Serializable
     data object RegistrationScreen : Screen
 
+    @Serializable
+    data object ChildrenScreen : Screen
+
+    @Serializable
+    data class ChildAttributesScreen(
+        var username: String,
+    ) : Screen
 
 }

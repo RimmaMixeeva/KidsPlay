@@ -22,6 +22,7 @@ serialization = "1.6.3"
 hilt = "2.51.1"
 ksp = "2.0.21-1.0.27"
 
+
 [libraries]
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }

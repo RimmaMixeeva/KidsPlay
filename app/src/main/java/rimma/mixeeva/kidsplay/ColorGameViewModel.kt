@@ -149,7 +149,7 @@ class ColorGameViewModel @Inject constructor(
             when (levelNumber){
                 1 ->  activateAchievement(2)
                 10 -> activateAchievement(3)
-                31 -> activateAchievement(4)
+                46 -> activateAchievement(4)
                 60 -> {
                     if (colorGameLevels.value.filter { it.starsAchieved == 3 }.size == 60){
                         activateAchievement(5)

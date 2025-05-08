@@ -1,6 +1,7 @@
 package rimma.mixeeva.kidsplay
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -146,8 +147,10 @@ class MainViewModel @Inject constructor(
     suspend fun wasAccountRegistered(): Boolean {
         val nick =
             userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK).first()
+        Log.d("TEST", "nick - " + nick.toString())
         val avatar =
             userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_AVATAR).first()
+        Log.d("TEST", "avatar - " + avatar.toString())
         return nick != null && avatar != null
     }
 
@@ -158,30 +161,34 @@ class MainViewModel @Inject constructor(
     suspend fun upgradeCharacteristics(
         nIntelligence: Int, nAttentiveness: Int, nReaction: Int, nLogic: Int, nCoins: Int
     ) {
+        Log.d("INTELLIGENCE ", "key: ${UserPreferencesKeys.FIELD_INTELLIGENCE} prevValue: ${intelligence.value} plus: $nIntelligence")
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_INTELLIGENCE,
-            (intelligence.value ?: 0) + nIntelligence
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_INTELLIGENCE).first() ?: 0) + nIntelligence
         )
+        Log.d("ATTENTIVENESS ", "key: ${UserPreferencesKeys.FIELD_ATTENTIVENESS} prevValue: ${attentiveness.value} plus: $nAttentiveness")
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_ATTENTIVENESS,
-            (attentiveness.value ?: 0) + nAttentiveness
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_ATTENTIVENESS).first() ?: 0) + nAttentiveness
         )
+        Log.d("REACTION ", "key: ${UserPreferencesKeys.FIELD_REACTION} prevValue: ${reaction.value} plus: $nReaction")
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_REACTION,
-            (reaction.value ?: 0) + nReaction
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_REACTION).first() ?: 0) + nReaction
         )
+        Log.d("LOGIC ", "key: ${UserPreferencesKeys.FIELD_LOGIC} prevValue: ${logic.value} plus: $nLogic")
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_LOGIC,
-            (logic.value ?: 0) + nLogic
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_LOGIC).first() ?: 0) + nLogic
         )
-
+        Log.d("COINS ", "key: ${UserPreferencesKeys.FIELD_COINS} prevValue: ${coins.value} plus: $nCoins")
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_COINS,
-            (coins.value ?: 0) + nCoins
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_COINS).first() ?: 0) + nCoins
         )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_EXPERIENCE,
-            (experience.value ?: 0) + nIntelligence + nAttentiveness + nReaction + nLogic
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_EXPERIENCE).first() ?: 0) + nIntelligence + nAttentiveness + nReaction + nLogic
         )
     }
 
