@@ -1,6 +1,6 @@
 package rimma.mixeeva.kidsplay.screens.server.models
 
-data class CreateAchievementRequest(
+data class CreateUpdateAchievementRequest(
     val username: String,
     var title: String,
     var condition: String,

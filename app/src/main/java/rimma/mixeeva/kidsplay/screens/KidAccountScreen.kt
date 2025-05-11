@@ -108,17 +108,19 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                         .shadow(elevation = 8.dp, shape = CircleShape)
                         .padding(bottom = 10.dp)
                 ) {
-                    if (avatar != null)
-                    Image(painter = painterResource(avatar!!),
-                        contentDescription = "Выбранный аватар",
-                        modifier = Modifier
-                            .fillMaxWidth(0.6f)
-                            .clip(CircleShape)
-                            .aspectRatio(1f)
-                            .shadow(elevation = 8.dp)
-                            .graphicsLayer { rotationZ = animateValue },
-                        contentScale = ContentScale.Crop
-                    )
+                    if (avatar != null) {
+                        Image(
+                            painter = painterResource(avatar!!),
+                            contentDescription = "Выбранный аватар",
+                            modifier = Modifier
+                                .fillMaxWidth(0.6f)
+                                .clip(CircleShape)
+                                .aspectRatio(1f)
+                                .shadow(elevation = 8.dp)
+                                .graphicsLayer { rotationZ = animateValue },
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
                 AutoResizedText(
                     text = nickname ?: "", size = 50.sp, color = Color.White
@@ -141,7 +143,7 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                     )
 
                     AutoResizedText(
-                        text = (experience?:0).toString(), size = 30.sp, color = Color.White
+                        text = (experience ?: 0).toString(), size = 30.sp, color = Color.White
                     )
                     Image(
                         painter = painterResource(R.drawable.coin),
@@ -154,13 +156,18 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                     )
 
                     AutoResizedText(
-                        text = (coins?:0).toString(), size = 30.sp, color = Color.White
+                        text = (coins ?: 0).toString(), size = 30.sp, color = Color.White
                     )
                 }
 
                 Characteristic(intelligence ?: 0, 30, color = Color.Green, name = "Интеллект")
                 Spacer(modifier = Modifier.height(10.dp))
-                Characteristic(attentiveness ?: 0, 90, color = Color.Magenta, name = "Внимательность")
+                Characteristic(
+                    attentiveness ?: 0,
+                    90,
+                    color = Color.Magenta,
+                    name = "Внимательность"
+                )
                 Spacer(modifier = Modifier.height(10.dp))
                 Characteristic(reaction ?: 0, 20, color = Color.Yellow, name = "Реакция")
                 Spacer(modifier = Modifier.height(10.dp))
@@ -192,12 +199,14 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                             .size(60.dp)
                             .border(2.dp, Color.White, CircleShape),
 
-                    ) {
+                        ) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "finish",
                             tint = Color.White,
-                            modifier = Modifier.fillMaxSize().padding(5.dp)
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(5.dp)
                         )
                     }
                 }

@@ -3,7 +3,7 @@ package rimma.mixeeva.kidsplay.screens.server.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateAtributesRequest(
+data class CreateUpdateAttributesRequest(
     val username: String,
     val intelligence: Int,
     val attentiveness: Int,

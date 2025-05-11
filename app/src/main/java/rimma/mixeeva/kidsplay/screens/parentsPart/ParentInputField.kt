@@ -14,12 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ParentInputField(value: MutableState<String>, text: String, valid: Boolean = true){
+fun ParentInputField(value: MutableState<String>, text: String, valid: Boolean = true, isPassword: Boolean = false){
     BasicTextField(
         value = value.value,
         onValueChange = { newValue ->
@@ -49,6 +51,7 @@ fun ParentInputField(value: MutableState<String>, text: String, valid: Boolean =
                 }
                 innerTextField()
             }
-        }
+        },
+        visualTransformation =  if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
     )
 }

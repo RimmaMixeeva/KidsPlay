@@ -1,5 +1,6 @@
 package rimma.mixeeva.kidsplay.navigation
 
+import android.transition.Scene
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -78,6 +79,17 @@ sealed interface Screen {
     @Serializable
     data class ChildAttributesScreen(
         var username: String,
+        var avatar: Int,
     ) : Screen
+
+    @Serializable
+    data object ChildAchievementsStatisticsScreen: Screen
+
+    @Serializable
+    data object ChildGiftsStatisticsScreen: Screen
+
+    @Serializable
+    data object ChildColorGameLevelsStatisticsScreen: Screen
+
 
 }

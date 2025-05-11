@@ -35,7 +35,10 @@ import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFirstLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFourthLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameSecondLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameThirdLevelsScreen
+import rimma.mixeeva.kidsplay.screens.parentsPart.ChildAchievementsStatisticsScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildAttributesScreen
+import rimma.mixeeva.kidsplay.screens.parentsPart.ChildColorGameLevelsStatisticsScreen
+import rimma.mixeeva.kidsplay.screens.parentsPart.ChildGiftsStatisticsScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildrenScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.LoginScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.RegistrationScreen
@@ -136,7 +139,16 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.ChildAttributesScreen> {
                         val args = it.toRoute<Screen.ChildAttributesScreen>()
-                        ChildAttributesScreen(parentViewModel, args.username)
+                        ChildAttributesScreen(parentViewModel, args.username, args.avatar)
+                    }
+                    composable<Screen.ChildAchievementsStatisticsScreen> {
+                        ChildAchievementsStatisticsScreen(parentViewModel)
+                    }
+                    composable<Screen.ChildGiftsStatisticsScreen> {
+                        ChildGiftsStatisticsScreen(parentViewModel)
+                    }
+                    composable<Screen.ChildColorGameLevelsStatisticsScreen> {
+                        ChildColorGameLevelsStatisticsScreen(parentViewModel)
                     }
                 }
             }

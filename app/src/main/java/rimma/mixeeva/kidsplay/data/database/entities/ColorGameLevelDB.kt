@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "ColorGameLevels",
-//    foreignKeys = [
-//        ForeignKey(entity = GiftsDB::class, parentColumns = ["id"], childColumns = ["gift"])]
 )
 data class ColorGameLevelDB(
     @PrimaryKey

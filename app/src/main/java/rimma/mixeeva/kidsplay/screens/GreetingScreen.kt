@@ -51,10 +51,7 @@ import rimma.mixeeva.kidsplay.ui.theme.DarkYellow
 
 @Composable
 fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
-    var wasAccountRegistered by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        wasAccountRegistered = viewModel.wasAccountRegistered()
-    }
+    LaunchedEffect(Unit) { viewModel.wasAccountRegistered() }
     Box {
         Image(
             painter = painterResource(id = R.drawable.main),
@@ -103,10 +100,10 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
             Column {
                 GreetingScreenButton(
                     onClick = {
-                        if (wasAccountRegistered) viewModel.navigator.navigate(Screen.KidAccountScreen())
+                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.KidAccountScreen())
                         else viewModel.playSound(R.raw.blocked)
                     },
-                    wasAccountRegistered = wasAccountRegistered,
+                    wasAccountRegistered = viewModel.wasAccountRegistered.value,
                     mainColor = Color.Magenta,
                     darkColor = DarkMagenta,
                     painter = rememberVectorPainter(Icons.Default.AccountCircle),
@@ -115,11 +112,11 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingScreenButton(
                     onClick = {
-                        if (wasAccountRegistered) viewModel.navigator.navigate(Screen.AchievementScreen) else viewModel.playSound(
+                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.AchievementScreen) else viewModel.playSound(
                             R.raw.blocked
                         )
                     },
-                    wasAccountRegistered = wasAccountRegistered,
+                    wasAccountRegistered = viewModel.wasAccountRegistered.value,
                     mainColor = Color.Blue,
                     darkColor = DarkBlue,
                     painter = painterResource(R.drawable.achievements),
@@ -128,11 +125,11 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingScreenButton(
                     onClick = {
-                        if (wasAccountRegistered) viewModel.navigator.navigate(Screen.GiftScreen) else viewModel.playSound(
+                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.GiftScreen) else viewModel.playSound(
                             R.raw.blocked
                         )
                     },
-                    wasAccountRegistered = wasAccountRegistered,
+                    wasAccountRegistered = viewModel.wasAccountRegistered.value,
                     mainColor = Color.Yellow,
                     darkColor = DarkYellow,
                     painter = painterResource(R.drawable.gift),
@@ -142,10 +139,10 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
             GreetingScreenButton(
                 onClick = {
-                    if (wasAccountRegistered) viewModel.navigator.navigate(Screen.PlayGroundScreen)
+                    if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.PlayGroundScreen)
                     else viewModel.navigator.navigate(Screen.ChooseAvatarScreen)
                 },
-                wasAccountRegistered = wasAccountRegistered,
+                wasAccountRegistered = viewModel.wasAccountRegistered.value,
                 mainColor = Color.Green,
                 darkColor = DarkGreen,
                 painter = rememberVectorPainter(Icons.Default.PlayArrow),

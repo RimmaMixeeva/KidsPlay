@@ -84,7 +84,7 @@ fun LoginScreen(viewModel: ParentViewModel) {
                 align = TextAlign.Start
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                ParentInputField(password, "Пароль", valid = password.value.isNotEmpty())
+                ParentInputField(password, "Пароль", valid = password.value.isNotEmpty(), isPassword = true)
             }
             Spacer(modifier = Modifier.height(60.dp))
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {

@@ -1,5 +1,5 @@
 package rimma.mixeeva.kidsplay.screens.server.models
 
-data class CreateAtributesResponse (
+data class CreateUpdateGiftResponse(
     var response: String
 )

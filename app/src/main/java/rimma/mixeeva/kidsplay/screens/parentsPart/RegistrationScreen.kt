@@ -109,7 +109,7 @@ fun RegistrationScreen(viewModel: ParentViewModel) {
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
                 ParentInputField(
-                    password, "Пароль", valid = (password.value.isNotEmpty())
+                    password, "Пароль", valid = (password.value.isNotEmpty()), isPassword = true
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
@@ -126,7 +126,8 @@ fun RegistrationScreen(viewModel: ParentViewModel) {
                 ParentInputField(
                     repeatingPassword,
                     "Повтор пароля",
-                    valid = (repeatingPassword.value.isNotEmpty() && password.value == repeatingPassword.value)
+                    valid = (repeatingPassword.value.isNotEmpty() && password.value == repeatingPassword.value),
+                    isPassword = true
                 )
             }
             Spacer(modifier = Modifier.height(60.dp))

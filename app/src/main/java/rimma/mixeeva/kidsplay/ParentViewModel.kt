@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -16,6 +17,8 @@ import kotlinx.coroutines.launch
 import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.screens.server.models.LoginRequest
@@ -23,9 +26,14 @@ import rimma.mixeeva.kidsplay.screens.server.models.RegistrationRequest
 import rimma.mixeeva.kidsplay.screens.server.RetrofitInstance
 import rimma.mixeeva.kidsplay.screens.server.models.AddChildRequest
 import rimma.mixeeva.kidsplay.screens.server.models.AddChildResponse
-import rimma.mixeeva.kidsplay.screens.server.models.CreateAchievementRequest
-import rimma.mixeeva.kidsplay.screens.server.models.CreateAtributesRequest
+import rimma.mixeeva.kidsplay.screens.server.models.CreateUpdateAttributesRequest
+import rimma.mixeeva.kidsplay.screens.server.models.CreateUpdateGiftRequest
+import rimma.mixeeva.kidsplay.screens.server.models.CreateUpdateAchievementRequest
+import rimma.mixeeva.kidsplay.screens.server.models.CreateUpdateColorGameLevelsRequest
+import rimma.mixeeva.kidsplay.screens.server.models.GetChildAchievementByIdResponse
 import rimma.mixeeva.kidsplay.screens.server.models.GetChildAttributesResponse
+import rimma.mixeeva.kidsplay.screens.server.models.GetChildColorLevelByIdResponse
+import rimma.mixeeva.kidsplay.screens.server.models.GetChildGiftByIdResponse
 import rimma.mixeeva.kidsplay.screens.server.models.GetChildInfoResponse
 import javax.inject.Inject
 
@@ -34,6 +42,8 @@ class ParentViewModel @Inject constructor(
     val navigator: Navigator,
     var userPreferencesRepository: IUserPreferencesRepository,
     var achievementsDao: AchievementsDao,
+    var giftsDao: GiftDao,
+    var colorGameLevelDao: ColorGameLevelDao,
     @ApplicationContext var context: Context
 ) : ViewModel() {
     val parentUsername = mutableStateOf("")
@@ -43,7 +53,11 @@ class ParentViewModel @Inject constructor(
 
     var children = mutableStateMapOf<String, GetChildInfoResponse>()
     val currentChildTokenForAccessToServer: MutableState<AddChildResponse?> = mutableStateOf(null)
-    val currentOpenedChildAttributes: MutableState<GetChildAttributesResponse?> = mutableStateOf(null)
+    val currentOpenedChildAttributes: MutableState<GetChildAttributesResponse?> =
+        mutableStateOf(null)
+    var currentChildAchievementsList = mutableStateListOf<GetChildAchievementByIdResponse>()
+    var currentChildGiftsList = mutableStateListOf<GetChildGiftByIdResponse>()
+    var currentChildColorLevelsList = mutableStateListOf<GetChildColorLevelByIdResponse>()
 
     fun login(login: String, password: String) {
         viewModelScope.launch {
@@ -100,8 +114,9 @@ class ParentViewModel @Inject constructor(
 
     fun addChild() {
         viewModelScope.launch {
-            val nickname = userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK).first()
-           // if (children.map { it.value.nickname }.firstOrNull { it == nickname } == null) {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK).first()
+            if (children.map { it.value.nickname }.firstOrNull { it == nickname } == null) {
                 try {
                     val avatar =
                         userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_AVATAR)
@@ -137,14 +152,28 @@ class ParentViewModel @Inject constructor(
                 }
                 savePlayerAccountInfo()
                 getAllParentChildren()
-//            } else {
-//                Toast.makeText(
-//                    context,
-//                    "Текущий ребёнок уже добавлен",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
+            } else {
+                Toast.makeText(
+                    context,
+                    "Текущий ребёнок уже добавлен",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
+    }
+
+    fun savePlayerAccountInfo() {
+        savePlayerAttributes()
+        saveAchievement()
+        saveGifts()
+        saveColorGameLevels()
+    }
+
+    fun updateAllPlayerInfo() {
+        updatePlayerAttributes()
+        updateAllPlayerAchievements()
+        updateAllPlayerGifts()
+        updateAllPlayerColorGameLevels()
     }
 
     fun saveAchievement() {
@@ -160,7 +189,7 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.createAchievements(
                         "Bearer $childToken",
-                        CreateAchievementRequest(
+                        CreateUpdateAchievementRequest(
                             nickname,
                             item.title,
                             item.condition,
@@ -181,6 +210,197 @@ class ParentViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateAllPlayerAchievements() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            val childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val achievements = achievementsDao.getAll().first()
+            achievements.forEach { item ->
+                if (childToken != null && nickname != null) {
+                    val response = RetrofitInstance.instance.updateAchievements(
+                        "Bearer $childToken",
+                        CreateUpdateAchievementRequest(
+                            nickname,
+                            item.title,
+                            item.condition,
+                            item.description,
+                            item.obtained
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Updating achievement is a success")
+                        Log.d("SERVER", "Result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened updating achievement: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveColorGameLevels() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            val childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val colorGameLevels = colorGameLevelDao.getAll().first()
+            colorGameLevels.forEach { item ->
+                if (childToken != null && nickname != null) {
+                    val response = RetrofitInstance.instance.createColorGameLevels(
+                        "Bearer $childToken",
+                        CreateUpdateColorGameLevelsRequest(
+                            nickname,
+                            item.levelNumber,
+                            item.starsAchieved,
+                            item.timer,
+                            item.subLevels,
+                            item.isColorPhrased,
+                            item.hasVoiceActing,
+                            item.numOfColors,
+                            item.isLevelOpened,
+                            item.gift ?: 0
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Saving color game levels is a success")
+                        Log.d("SERVER", "Result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened saving color game levels: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateAllPlayerColorGameLevels() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            val childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val colorGameLevels = colorGameLevelDao.getAll().first()
+            colorGameLevels.forEach { item ->
+                if (childToken != null && nickname != null) {
+                    val response = RetrofitInstance.instance.updateColorGameLevels(
+                        "Bearer $childToken",
+                        CreateUpdateColorGameLevelsRequest(
+                            nickname,
+                            item.levelNumber,
+                            item.starsAchieved,
+                            item.timer,
+                            item.subLevels,
+                            item.isColorPhrased,
+                            item.hasVoiceActing,
+                            item.numOfColors,
+                            item.isLevelOpened,
+                            item.gift ?: 0
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Updating color levels is a success")
+                        Log.d("SERVER", "Result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened updating color levels: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun saveGifts() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            val childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val gifts = giftsDao.getAll().first()
+            gifts.forEach { item ->
+                if (childToken != null && nickname != null) {
+                    val response = RetrofitInstance.instance.createGifts(
+                        "Bearer $childToken",
+                        CreateUpdateGiftRequest(
+                            nickname,
+                            item.title,
+                            item.condition,
+                            item.description,
+                            item.obtained,
+                            item.opened,
+                            item.used
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Saving gift is a success")
+                        Log.d("SERVER", "Result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened saving gift: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun updateAllPlayerGifts() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            val childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val gifts = giftsDao.getAll().first()
+            gifts.forEach { item ->
+                if (childToken != null && nickname != null) {
+                    val response = RetrofitInstance.instance.updateGifts(
+                        "Bearer $childToken",
+                        CreateUpdateGiftRequest(
+                            nickname,
+                            item.title,
+                            item.condition,
+                            item.description,
+                            item.obtained,
+                            item.opened,
+                            item.used
+                        )
+                    )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Updating gifts is a success")
+                        Log.d("SERVER", "Result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened updating gifts: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
 
     fun getAllParentChildren() {
         viewModelScope.launch {
@@ -208,11 +428,6 @@ class ParentViewModel @Inject constructor(
             }
 
         }
-    }
-
-    fun savePlayerAccountInfo() {
-        savePlayerAttributes()
-        saveAchievement()
     }
 
     fun savePlayerAttributes() {
@@ -243,7 +458,7 @@ class ParentViewModel @Inject constructor(
                     val response =
                         RetrofitInstance.instance.createAttributes(
                             "Bearer $childToken",
-                            CreateAtributesRequest(
+                            CreateUpdateAttributesRequest(
                                 nickname,
                                 intelligence,
                                 attentiveness,
@@ -259,6 +474,59 @@ class ParentViewModel @Inject constructor(
                         Log.d(
                             "SERVER",
                             "Error happened while saving player attributes: " + response.code() + " " + response.message() + response.errorBody()
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("SERVER", e.message.toString())
+            }
+        }
+    }
+
+    fun updatePlayerAttributes() {
+        viewModelScope.launch {
+            val nickname =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK)
+                    .first()
+            var childToken =
+                userPreferencesRepository.getStringFlowValue(stringPreferencesKey(nickname ?: ""))
+                    .first()
+            val intelligence =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_INTELLIGENCE)
+                    .first()
+            val attentiveness =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_ATTENTIVENESS)
+                    .first()
+            val reaction =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_REACTION)
+                    .first()
+            val logic =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_LOGIC)
+                    .first()
+            val coins =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_COINS)
+                    .first()
+            try {
+                if (childToken != null && nickname != null && intelligence != null && attentiveness != null && reaction != null && logic != null && coins != null) {
+                    val response =
+                        RetrofitInstance.instance.updateAttributes(
+                            "Bearer $childToken",
+                            CreateUpdateAttributesRequest(
+                                username = nickname,
+                                intelligence = intelligence,
+                                attentiveness = attentiveness,
+                                reaction = reaction,
+                                logic = logic,
+                                coins = coins
+                            )
+                        )
+                    if (response.isSuccessful) {
+                        Log.d("SERVER", "Success while updating player attributes")
+                        Log.d("SERVER", "Returned result: " + response.body()?.response)
+                    } else {
+                        Log.d(
+                            "SERVER",
+                            "Error happened while updating player attributes: " + response.code() + " " + response.message() + response.errorBody()
                         )
                     }
                 }
@@ -290,7 +558,7 @@ class ParentViewModel @Inject constructor(
         return null
     }
 
-    fun getChildAttributes(childUsername: String){
+    fun getChildAttributes(childUsername: String) {
         viewModelScope.launch {
             try {
                 val response =
@@ -310,6 +578,143 @@ class ParentViewModel @Inject constructor(
             }
         }
     }
+
+    fun getChildAchievements(childUsername: String) {
+        viewModelScope.launch {
+            try {
+                val response =
+                    RetrofitInstance.instance.getChildAchievements(childUsername)
+                if (response.isSuccessful) {
+                    Log.d("SERVER", "Success while getting child achievements")
+                    Log.d("SERVER", "Returned result: " + response.body())
+                    currentChildAchievementsList.clear()
+                    response.body()?.listId?.forEach { id ->
+                        getAchievementOfUserById(id)
+                    }
+                } else {
+                    Log.d(
+                        "SERVER",
+                        "Error happened while getting child achievements: " + response.code() + " " + response.message() + response.errorBody()
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d("SERVER", e.message.toString())
+            }
+        }
+    }
+
+    suspend fun getAchievementOfUserById(id: String) {
+        try {
+            val response =
+                RetrofitInstance.instance.getChildAchievementById(id)
+            if (response.isSuccessful) {
+                Log.d("SERVER", "Success while getting child achievements with ID: $id")
+                Log.d("SERVER", "Returned result: " + response.body())
+                response.body()?.let {
+                    currentChildAchievementsList.add(it)
+                }
+            } else {
+                Log.d(
+                    "SERVER",
+                    "Error happened while getting child achievement by $id: " + response.code() + " " + response.message() + response.errorBody()
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("SERVER", e.message.toString())
+        }
+    }
+
+    fun getChildGifts(childUsername: String) {
+        viewModelScope.launch {
+            try {
+                val response =
+                    RetrofitInstance.instance.getChildGifts(childUsername)
+                if (response.isSuccessful) {
+                    Log.d("SERVER", "Success while getting child gifts")
+                    Log.d("SERVER", "Returned result: " + response.body())
+                    currentChildGiftsList.clear()
+                    response.body()?.listId?.forEach { id ->
+                        getGiftOfUserById(id)
+                    }
+                } else {
+                    Log.d(
+                        "SERVER",
+                        "Error happened while getting child gifts: " + response.code() + " " + response.message() + response.errorBody()
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d("SERVER", e.message.toString())
+            }
+        }
+    }
+
+    suspend fun getGiftOfUserById(id: String) {
+        try {
+            val response =
+                RetrofitInstance.instance.getChildGiftById(id)
+            if (response.isSuccessful) {
+                Log.d("SERVER", "Success while getting child gift with ID: $id")
+                Log.d("SERVER", "Returned result: " + response.body())
+                response.body()?.let {
+                    currentChildGiftsList.add(it)
+                }
+            } else {
+                Log.d(
+                    "SERVER",
+                    "Error happened while getting child gift by $id: " + response.code() + " " + response.message() + response.errorBody()
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("SERVER", e.message.toString())
+        }
+    }
+
+    fun getChildColorGameLevels(childUsername: String) {
+        viewModelScope.launch {
+            try {
+                val response =
+                    RetrofitInstance.instance.getChildColorLevels(childUsername)
+                if (response.isSuccessful) {
+                    Log.d("SERVER", "Success while getting color game levels")
+                    Log.d("SERVER", "Returned result: " + response.body())
+                    currentChildColorLevelsList.clear()
+                    response.body()?.listId?.forEach { id ->
+                        getColorLevelOfUserById(id)
+                    }
+                } else {
+                    Log.d(
+                        "SERVER",
+                        "Error happened while getting child color game levels: " + response.code() + " " + response.message() + response.errorBody()
+                    )
+                }
+            } catch (e: Exception) {
+                Log.d("SERVER", e.message.toString())
+            }
+        }
+    }
+
+    suspend fun getColorLevelOfUserById(id: String) {
+        try {
+            val response =
+                RetrofitInstance.instance.getChildColorById(id)
+            if (response.isSuccessful) {
+                Log.d("SERVER", "Success while getting child color game level with ID: $id")
+                Log.d("SERVER", "Returned result: " + response.body())
+                response.body()?.let {
+                    currentChildColorLevelsList.add(it)
+                }
+            } else {
+                Log.d(
+                    "SERVER",
+                    "Error happened while getting child color level by $id: " + response.code() + " " + response.message() + response.errorBody()
+                )
+            }
+        } catch (e: Exception) {
+            Log.d("SERVER", e.message.toString())
+        }
+    }
+
+
 }
 
 enum class AUTH_STATE {

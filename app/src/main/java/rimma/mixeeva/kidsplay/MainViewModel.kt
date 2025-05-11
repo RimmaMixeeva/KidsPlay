@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
@@ -102,6 +104,8 @@ class MainViewModel @Inject constructor(
             initialValue = 0
         )
 
+    var wasAccountRegistered = mutableStateOf(false)
+
     var maleAvatarList = listOf(
         R.drawable.male_avatar_1,
         R.drawable.male_avatar_2,
@@ -144,14 +148,16 @@ class MainViewModel @Inject constructor(
         userPreferencesRepository.setIntValue(UserPreferencesKeys.FIELD_EXPERIENCE, 0)
     }
 
-    suspend fun wasAccountRegistered(): Boolean {
-        val nick =
-            userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK).first()
-        Log.d("TEST", "nick - " + nick.toString())
-        val avatar =
-            userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_AVATAR).first()
-        Log.d("TEST", "avatar - " + avatar.toString())
-        return nick != null && avatar != null
+    fun wasAccountRegistered() {
+        viewModelScope.launch {
+            val nick =
+                userPreferencesRepository.getStringFlowValue(UserPreferencesKeys.FIELD_NICK).first()
+            Log.d("TEST", "nick - " + nick.toString())
+            val avatar =
+                userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_AVATAR).first()
+            Log.d("TEST", "avatar - " + avatar.toString())
+            wasAccountRegistered.value = (nick != null && avatar != null)
+        }
     }
 
     suspend fun giftWasUsed(id: Int) {
