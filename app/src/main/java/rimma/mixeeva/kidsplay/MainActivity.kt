@@ -63,6 +63,7 @@ class MainActivity : ComponentActivity() {
 
         // Инициализация и запуск музыки
         mediaPlayer.playSong(R.raw.greeting, true)
+        mainViewModel.startObservation()
         enableEdgeToEdge()
         setContent {
             val controller = rememberNavController()
@@ -165,6 +166,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mainViewModel.stopObservation()
         mediaPlayer.destroy()
         navigator.clear()
     }

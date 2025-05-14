@@ -66,7 +66,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                         Text(
                             "Уровень", modifier = Modifier
                                 .padding(4.dp)
-                                .width(140.dp),
+                                .width(100.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -75,7 +75,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Звёзды",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(100.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -84,7 +84,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Таймер",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(100.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -93,7 +93,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Подуровни",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(140.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -102,7 +102,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Название \nокрашено",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(140.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -111,7 +111,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Озвучка",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(100.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -120,7 +120,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Количество \nцветов",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(120.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -129,7 +129,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                             "Доступен",
                             modifier = Modifier
                                 .padding(4.dp)
-                                .width(200.dp),
+                                .width(100.dp),
                             fontSize = 20.sp,
                             color = Color.White
                         )
@@ -155,7 +155,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 Text(
                                     level.levelNumber.toString(), modifier = Modifier
                                         .padding(4.dp)
-                                        .width(140.dp),
+                                        .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
@@ -163,7 +163,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     level.starsAchieved.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
@@ -171,7 +171,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     if (level.timer == 0) "нет" else (level.timer.toString() + " сек"),
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -179,7 +179,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     level.subLevels.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(140.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -187,7 +187,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     if (level.isColorPhrased) "да" else "нет",
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(140.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -195,7 +195,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     if (level.hasVoiceActing) "да" else "нет",
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -203,7 +203,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     level.numOfColors.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(120.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
@@ -211,7 +211,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                     if (level.isLevelOpened) "да" else "нет",
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
+                                        .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))

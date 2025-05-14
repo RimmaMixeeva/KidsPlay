@@ -4,19 +4,26 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
-import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
+import rimma.mixeeva.kidsplay.data.preferences.IUserPreferencesRepository
+import rimma.mixeeva.kidsplay.data.preferences.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
+import rimma.mixeeva.kidsplay.data.server.RetrofitInstance
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateAchievementRequest
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateColorGameLevelsRequest
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateGiftRequest
+import rimma.mixeeva.kidsplay.model.Updater
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import javax.inject.Inject
 
@@ -27,13 +34,17 @@ class MainViewModel @Inject constructor(
     var userPreferencesRepository: IUserPreferencesRepository,
     var giftDao: GiftDao,
     var achievementsDao: AchievementsDao,
+    var colorGameLevelDao: ColorGameLevelDao,
     var mediaPlayer: KidsMediaPlayer,
+    var updater: Updater,
     @ApplicationContext var context: Context
 ) : ViewModel() {
 
     var currentAchievementToShow: MutableState<Int?> = mutableStateOf(null)
     suspend fun activateAchievement() {
-        val newAchievements = achievements.value.firstOrNull { it.id == currentAchievementToShow.value }?.copy(obtained = true)
+        val newAchievements =
+            achievements.value.firstOrNull { it.id == currentAchievementToShow.value }
+                ?.copy(obtained = true)
         if (newAchievements != null) {
             achievementsDao.updateAll(newAchievements)
         }
@@ -167,39 +178,76 @@ class MainViewModel @Inject constructor(
     suspend fun upgradeCharacteristics(
         nIntelligence: Int, nAttentiveness: Int, nReaction: Int, nLogic: Int, nCoins: Int
     ) {
-        Log.d("INTELLIGENCE ", "key: ${UserPreferencesKeys.FIELD_INTELLIGENCE} prevValue: ${intelligence.value} plus: $nIntelligence")
+        Log.d(
+            "INTELLIGENCE ",
+            "key: ${UserPreferencesKeys.FIELD_INTELLIGENCE} prevValue: ${intelligence.value} plus: $nIntelligence"
+        )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_INTELLIGENCE,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_INTELLIGENCE).first() ?: 0) + nIntelligence
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_INTELLIGENCE)
+                .first() ?: 0) + nIntelligence
         )
-        Log.d("ATTENTIVENESS ", "key: ${UserPreferencesKeys.FIELD_ATTENTIVENESS} prevValue: ${attentiveness.value} plus: $nAttentiveness")
+        Log.d(
+            "ATTENTIVENESS ",
+            "key: ${UserPreferencesKeys.FIELD_ATTENTIVENESS} prevValue: ${attentiveness.value} plus: $nAttentiveness"
+        )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_ATTENTIVENESS,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_ATTENTIVENESS).first() ?: 0) + nAttentiveness
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_ATTENTIVENESS)
+                .first() ?: 0) + nAttentiveness
         )
-        Log.d("REACTION ", "key: ${UserPreferencesKeys.FIELD_REACTION} prevValue: ${reaction.value} plus: $nReaction")
+        Log.d(
+            "REACTION ",
+            "key: ${UserPreferencesKeys.FIELD_REACTION} prevValue: ${reaction.value} plus: $nReaction"
+        )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_REACTION,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_REACTION).first() ?: 0) + nReaction
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_REACTION).first()
+                ?: 0) + nReaction
         )
-        Log.d("LOGIC ", "key: ${UserPreferencesKeys.FIELD_LOGIC} prevValue: ${logic.value} plus: $nLogic")
+        Log.d(
+            "LOGIC ",
+            "key: ${UserPreferencesKeys.FIELD_LOGIC} prevValue: ${logic.value} plus: $nLogic"
+        )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_LOGIC,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_LOGIC).first() ?: 0) + nLogic
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_LOGIC).first()
+                ?: 0) + nLogic
         )
-        Log.d("COINS ", "key: ${UserPreferencesKeys.FIELD_COINS} prevValue: ${coins.value} plus: $nCoins")
+        Log.d(
+            "COINS ",
+            "key: ${UserPreferencesKeys.FIELD_COINS} prevValue: ${coins.value} plus: $nCoins"
+        )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_COINS,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_COINS).first() ?: 0) + nCoins
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_COINS).first()
+                ?: 0) + nCoins
         )
         userPreferencesRepository.setIntValue(
             UserPreferencesKeys.FIELD_EXPERIENCE,
-            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_EXPERIENCE).first() ?: 0) + nIntelligence + nAttentiveness + nReaction + nLogic
+            (userPreferencesRepository.getIntFlowValue(UserPreferencesKeys.FIELD_EXPERIENCE).first()
+                ?: 0) + nIntelligence + nAttentiveness + nReaction + nLogic
         )
     }
 
     fun changeMusicToColorGameSong() {
         mediaPlayer.destroy()
+    }
+
+    fun startObservation(){
+        viewModelScope.launch {
+            launch { updater.observeGifts() }
+            launch { updater.observeAchievements() }
+            launch { updater.observeColorLevels() }
+            launch { updater.observeIntelligence() }
+            launch { updater.observeAttentiveness() }
+            launch { updater.observeLogic() }
+            launch { updater.observeReaction() }
+
+        }
+    }
+    fun stopObservation(){
+        viewModelScope.cancel()
     }
 
 }

@@ -149,15 +149,15 @@ fun PlayerCard(id: Int, name: String, onClick: () -> Unit, refresh: () -> Unit) 
             Spacer(modifier = Modifier.width(16.dp))
             AutoResizedText(text = name, size = 36.sp, color = Color.Black, hasShadow = false)
         }
-        Icon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = "synchronize",
-            tint = Color.Green,
-            modifier = Modifier
-                .size(60.dp)
-                .clickable {
-                    refresh.invoke()
-                }
-        )
+//        Icon(
+//            imageVector = Icons.Default.Refresh,
+//            contentDescription = "synchronize",
+//            tint = Color.Green,
+//            modifier = Modifier
+//                .size(60.dp)
+//                .clickable {
+//                    refresh.invoke()
+//                }
+//        )
     }
 }

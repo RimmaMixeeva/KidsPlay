@@ -2,34 +2,23 @@ package rimma.mixeeva.kidsplay
 
 
 import android.content.Context
-import android.speech.tts.TextToSpeech
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
-import rimma.mixeeva.kidsplay.data.IUserPreferencesRepository
-import rimma.mixeeva.kidsplay.data.UserPreferencesKeys
-import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
-import rimma.mixeeva.kidsplay.data.database.entities.GiftsDB
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
 import rimma.mixeeva.kidsplay.ui.theme.Orange
-import rimma.mixeeva.kidsplay.ui.theme.Pink40
 import rimma.mixeeva.kidsplay.ui.theme.Purple40
 import javax.inject.Inject
 
