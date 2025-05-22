@@ -7,21 +7,9 @@ import androidx.room.PrimaryKey
 data class GiftsDB(
     @PrimaryKey(autoGenerate = true)
     val id: Int,
+    val descriptionId: Int,
 
-    val title: String ,
-    val condition: String,
-    val description: String,
-
-    val obtained: Boolean, //награда получена, но не отображается
+    val obtained: Boolean,
     val opened: Boolean, // награда получена и отображается на экране
     val used: Boolean,  // награда получена и использована, поэтому не отображается
-
-    val executor: String?,
-
-    val intelligence: Int,
-    val attentiveness: Int,
-    val reaction: Int,
-    val logic: Int,
-
-    val coins: Int
 )

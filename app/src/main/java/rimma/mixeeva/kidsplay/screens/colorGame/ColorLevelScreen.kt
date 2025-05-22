@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,8 +51,13 @@ import rimma.mixeeva.kidsplay.ui.theme.Orange
 
 @Composable
 fun ColorLevelScreen(viewModel: ColorGameViewModel, mainViewModel: MainViewModel, id: Int) {
+    val gifts by viewModel.gifts.collectAsState() //нельзя удалять, иначе во viewmodel список gifts будет empty,
+    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
+    val colorGameDescriptions by viewModel.colorGameDescriptions.collectAsState()//нельзя удалять, иначе во viewmodel список colorLevelsDescriptions будет empty,
+    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
+
     LaunchedEffect(viewModel.gCurrentSubLevelsCompleted.intValue) {
-        if (viewModel.colorGameLevels.value.first { it.levelNumber == id }.hasVoiceActing) {
+        if (viewModel.colorGameDescriptions.value.first { it.id == id }.hasVoiceActing) {
             TextVoicer.voiceText(
                 viewModel.context,
                 {},

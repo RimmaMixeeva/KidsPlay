@@ -3,9 +3,12 @@ package rimma.mixeeva.kidsplay.model
 import android.util.Log
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.first
+import rimma.mixeeva.kidsplay.data.database.dao.AchievementDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDescriptionDao
 import rimma.mixeeva.kidsplay.data.preferences.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.preferences.UserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.server.RetrofitInstance
@@ -20,6 +23,8 @@ class Updater @Inject constructor(
     var giftDao: GiftDao,
     var achievementsDao: AchievementsDao,
     var colorGameLevelDao: ColorGameLevelDao,
+    var achievementDescriptionDao: AchievementDescriptionDao,
+    var colorGameDescriptionDao: ColorGameDescriptionDao,
     var userPreferencesRepository: UserPreferencesRepository
 ) {
     suspend fun observeGifts() {
@@ -35,13 +40,11 @@ class Updater @Inject constructor(
                     RetrofitInstance.instance.updateGifts(
                         "Bearer $childToken",
                         CreateUpdateGiftRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained,
-                            item.opened,
-                            item.used
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            obtained = item.obtained,
+                            opened = item.opened,
+                            used = item.used
                         )
                     )
 
@@ -63,11 +66,9 @@ class Updater @Inject constructor(
                     RetrofitInstance.instance.updateAchievements(
                         "Bearer $childToken",
                         CreateUpdateAchievementRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            obtained = item.obtained
                         )
                     )
                 }
@@ -86,19 +87,14 @@ class Updater @Inject constructor(
             val colorGameLevels = colorGameLevelDao.getAll().first()
             colorGameLevels.forEach { item ->
                 if (childToken != null && nickname != null) {
-                    val response = RetrofitInstance.instance.updateColorGameLevels(
+                    RetrofitInstance.instance.updateColorGameLevels(
                         "Bearer $childToken",
                         CreateUpdateColorGameLevelsRequest(
-                            nickname,
-                            item.levelNumber,
-                            item.starsAchieved,
-                            item.timer,
-                            item.subLevels,
-                            item.isColorPhrased,
-                            item.hasVoiceActing,
-                            item.numOfColors,
-                            item.isLevelOpened,
-                            item.gift ?: 0
+                            username = nickname,
+                            levelNumber = item.levelNumber,
+                            starsAchieved = item.starsAchieved,
+                            descriptionId = item.descriptionId,
+                            isLevelOpened = item.isLevelOpened
                         )
                     )
                 }

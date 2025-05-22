@@ -2,12 +2,8 @@ package rimma.mixeeva.kidsplay.data.server.models
 
 data class GetChildColorLevelByIdResponse(
     val username: String,
+    val descriptionId: Int,
     val levelNumber: Int,
     val starsAchieved: Int,
-    val timer: Int,
-    val subLevels: Int,
-    val isColorPhrased: Boolean,
-    val hasVoiceActing: Boolean,
-    val numOfColors: Int, var isLevelOpened: Boolean,
-    val gift: Int
+    var isLevelOpened: Boolean,
 )

@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +34,7 @@ import rimma.mixeeva.kidsplay.ui.theme.Purple40
 
 @Composable
 fun ChildAchievementsStatisticsScreen(viewModel: ParentViewModel) {
+    val achievementDescription = viewModel.achievementsDescription.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -104,14 +106,14 @@ fun ChildAchievementsStatisticsScreen(viewModel: ParentViewModel) {
                                     .background(Color.White)
                             ) {
                                 Text(
-                                    achievement.title, modifier = Modifier
+                                    achievementDescription.value.first { it.id == achievement.descriptionId }.title, modifier = Modifier
                                         .padding(4.dp)
                                         .width(140.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    achievement.condition,
+                                    achievementDescription.value.first { it.id == achievement.descriptionId }.condition,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),
@@ -119,7 +121,7 @@ fun ChildAchievementsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    achievement.description,
+                                    achievementDescription.value.first { it.id == achievement.descriptionId }.description,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),

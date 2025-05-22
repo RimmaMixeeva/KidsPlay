@@ -28,6 +28,7 @@ fun ShowGetAchievement(
     viewModel: MainViewModel
 ) { //всплывающая ачивка
     val achievements by viewModel.achievements.collectAsState()
+    val achievementDescription by viewModel.achievementsDescription.collectAsState()
     var allowShowing by remember { mutableStateOf(false)}
     LaunchedEffect (viewModel.currentAchievementToShow.value,
         achievements.size >= (viewModel.currentAchievementToShow.value ?: Int.MAX_VALUE)
@@ -54,7 +55,7 @@ fun ShowGetAchievement(
                 .padding(10.dp)
         ) {
             AutoResizedText(
-                text = achievements.firstOrNull { it.id == viewModel.currentAchievementToShow.value }?.title ?:"",
+                text = achievementDescription.firstOrNull { it.id == viewModel.currentAchievementToShow.value }?.title ?:"",
                 size = 40.sp,
                 color = Color.Black,
                 modifier = Modifier

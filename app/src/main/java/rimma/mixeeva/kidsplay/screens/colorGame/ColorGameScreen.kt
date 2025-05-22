@@ -43,8 +43,6 @@ import rimma.mixeeva.kidsplay.ui.theme.Orange
 @Composable
 fun ColorGameScreen(viewModel: ColorGameViewModel) {
     val gameLevels by viewModel.colorGameLevels.collectAsState()
-    val gifts by viewModel.gifts.collectAsState() //нельзя удалять, иначе во viewmodel список gifts будет empty,
-    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
     Box {
         Image(
             painter = painterResource(id = R.drawable.bluewall2),

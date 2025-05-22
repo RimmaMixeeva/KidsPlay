@@ -32,7 +32,7 @@ fun AchievementInfoScreen(
    viewModel: MainViewModel,
    id: Int
 ) {
-    val achievement = viewModel.achievements.collectAsState().value.first { it.id == id }
+    val achievementDescription = viewModel.achievementsDescription.collectAsState().value.first{it.id == id}
     Box(contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.bluewall),
@@ -51,7 +51,7 @@ fun AchievementInfoScreen(
             .fillMaxHeight(0.4f)) {
             AutoResizedText(
                 align = TextAlign.Center,
-                text = "\"" + achievement.title + "\"",
+                text = "\"" + achievementDescription.title + "\"",
                 size = 30.sp,
                 color = Color.Black,
                 hasShadow = false,
@@ -66,7 +66,7 @@ fun AchievementInfoScreen(
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left
                 )
                 AutoResizedText(
-                    text = achievement.condition, size = 24.sp, color = Color.Black, hasShadow = false,
+                    text = achievementDescription.condition, size = 24.sp, color = Color.Black, hasShadow = false,
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                 )
                 Spacer(modifier = Modifier.height(10.dp))
@@ -75,13 +75,10 @@ fun AchievementInfoScreen(
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left
                 )
                 AutoResizedText(
-                    text = achievement.description, size = 24.sp, color = Color.Black, hasShadow = false,
+                    text = achievementDescription.description, size = 24.sp, color = Color.Black, hasShadow = false,
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                 )
-
             }
-
         }
-
     }
 }

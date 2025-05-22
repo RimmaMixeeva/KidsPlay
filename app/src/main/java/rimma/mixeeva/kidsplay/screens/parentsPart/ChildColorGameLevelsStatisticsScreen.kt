@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import rimma.mixeeva.kidsplay.ui.theme.Purple40
 
 @Composable
 fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
+    val colorLevelsDescription = viewModel.colorGameDescription.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -168,7 +170,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    if (level.timer == 0) "нет" else (level.timer.toString() + " сек"),
+                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.timer == 0) "нет" else (colorLevelsDescription.value[level.descriptionId].timer.toString() + " сек"),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(100.dp),
@@ -176,7 +178,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    level.subLevels.toString(),
+                                    colorLevelsDescription.value.first { it.id == level.descriptionId }.subLevels.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(140.dp),
@@ -184,7 +186,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    if (level.isColorPhrased) "да" else "нет",
+                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.isColorPhrased) "да" else "нет",
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(140.dp),
@@ -192,7 +194,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    if (level.hasVoiceActing) "да" else "нет",
+                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.hasVoiceActing) "да" else "нет",
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(100.dp),
@@ -200,7 +202,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    level.numOfColors.toString(),
+                                    colorLevelsDescription.value.first { it.id == level.descriptionId }.numOfColors.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(120.dp),
@@ -216,7 +218,7 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    if (level.gift == 0) "награды нет" else "награда №${level.gift}",
+                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.gift == null) "награды нет" else "награда №${colorLevelsDescription.value.first{it.id == level.descriptionId}.gift}",
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),

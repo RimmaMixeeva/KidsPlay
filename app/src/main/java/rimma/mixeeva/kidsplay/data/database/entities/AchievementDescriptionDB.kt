@@ -3,10 +3,11 @@ package rimma.mixeeva.kidsplay.data.database.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "Achievements")
-data class AchievementsDB(
+@Entity(tableName = "AchievementDescription")
+data class AchievementDescriptionDB (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
-    val descriptionId: Int,
-    var obtained: Boolean
+    var title: String,
+    var condition: String,
+    var description: String,
 )

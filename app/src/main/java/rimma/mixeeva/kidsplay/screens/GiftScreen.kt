@@ -31,6 +31,7 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 @Composable
 fun GiftScreen(viewModel: MainViewModel) {
     val gifts by viewModel.gifts.collectAsState()
+    val giftsDescription by viewModel.giftsDescription.collectAsState()
     Box {
         Image(
             painter = painterResource(id = R.drawable.treasury),
@@ -65,11 +66,11 @@ fun GiftScreen(viewModel: MainViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = if (item.executor == null) R.drawable.red_ribbon else R.drawable.gold_ribbon),
+                        painter = painterResource(id = if (giftsDescription.first { it.id == item.descriptionId }.executor == null) R.drawable.red_ribbon else R.drawable.gold_ribbon),
                         contentDescription = "ribbon"
                     )
                     AutoResizedText(
-                        text = item.title,
+                        text = giftsDescription.first { it.id == item.descriptionId }.title,
                         modifier = Modifier
                             .fillMaxWidth(0.9f),
                         size = 30.sp,

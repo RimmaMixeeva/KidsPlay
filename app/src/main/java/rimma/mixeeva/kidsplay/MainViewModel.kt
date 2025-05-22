@@ -14,15 +14,14 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import rimma.mixeeva.kidsplay.data.database.dao.AchievementDescriptionDao
 import rimma.mixeeva.kidsplay.data.preferences.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.preferences.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
-import rimma.mixeeva.kidsplay.data.server.RetrofitInstance
-import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateAchievementRequest
-import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateColorGameLevelsRequest
-import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateGiftRequest
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDescriptionDao
 import rimma.mixeeva.kidsplay.model.Updater
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import javax.inject.Inject
@@ -37,6 +36,9 @@ class MainViewModel @Inject constructor(
     var colorGameLevelDao: ColorGameLevelDao,
     var mediaPlayer: KidsMediaPlayer,
     var updater: Updater,
+    val achievementDescriptionDao: AchievementDescriptionDao,
+    val giftDescriptionDao: GiftDescriptionDao,
+    var colorGameDescriptionDao: ColorGameDescriptionDao,
     @ApplicationContext var context: Context
 ) : ViewModel() {
 
@@ -72,7 +74,18 @@ class MainViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
+    val giftsDescription = giftDescriptionDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
     var achievements = achievementsDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+    val achievementsDescription = achievementDescriptionDao.getAll().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()

@@ -11,13 +11,7 @@ import androidx.room.PrimaryKey
 data class ColorGameLevelDB(
     @PrimaryKey
     val levelNumber: Int,
-
+    val descriptionId: Int,
     val starsAchieved: Int,
-    val timer: Int,
-    val subLevels: Int,
-    val isColorPhrased: Boolean,
-    val hasVoiceActing: Boolean,
-    var numOfColors: Int,
-    var isLevelOpened: Boolean,
-    val gift: Int?
+    val isLevelOpened: Boolean,
 )

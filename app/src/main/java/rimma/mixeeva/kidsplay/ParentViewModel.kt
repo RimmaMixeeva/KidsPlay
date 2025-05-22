@@ -12,14 +12,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import rimma.mixeeva.kidsplay.data.database.dao.AchievementDescriptionDao
 import rimma.mixeeva.kidsplay.data.preferences.IUserPreferencesRepository
 import rimma.mixeeva.kidsplay.data.preferences.UserPreferencesKeys
 import rimma.mixeeva.kidsplay.data.database.dao.AchievementsDao
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
+import rimma.mixeeva.kidsplay.data.database.dao.GiftDescriptionDao
 import rimma.mixeeva.kidsplay.data.server.RetrofitInstance
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateAchievementRequest
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateColorGameLevelsRequest
+import rimma.mixeeva.kidsplay.data.server.models.CreateUpdateGiftRequest
+import rimma.mixeeva.kidsplay.data.server.models.GetChildAchievementByIdResponse
 import rimma.mixeeva.kidsplay.data.server.models.LoginRequest
 import rimma.mixeeva.kidsplay.navigation.Navigator
 import rimma.mixeeva.kidsplay.navigation.Screen
@@ -32,6 +41,9 @@ class ParentViewModel @Inject constructor(
     var achievementsDao: AchievementsDao,
     var giftsDao: GiftDao,
     var colorGameLevelDao: ColorGameLevelDao,
+    var colorGameDescriptionDao: ColorGameDescriptionDao,
+    var achievementDescriptionDao: AchievementDescriptionDao,
+    var giftDescriptionDao: GiftDescriptionDao,
     @ApplicationContext var context: Context
 ) : ViewModel() {
     val parentUsername = mutableStateOf("")
@@ -39,13 +51,35 @@ class ParentViewModel @Inject constructor(
     val registrationState = mutableStateOf(AUTH_STATE.NONE)
     var parentsTokenForAccessToServer: MutableState<String?> = mutableStateOf(null)
 
-    var children = mutableStateMapOf<String, rimma.mixeeva.kidsplay.data.server.models.GetChildInfoResponse>()
-    val currentChildTokenForAccessToServer: MutableState<rimma.mixeeva.kidsplay.data.server.models.AddChildResponse?> = mutableStateOf(null)
+    var children =
+        mutableStateMapOf<String, rimma.mixeeva.kidsplay.data.server.models.GetChildInfoResponse>()
+    val currentChildTokenForAccessToServer: MutableState<rimma.mixeeva.kidsplay.data.server.models.AddChildResponse?> =
+        mutableStateOf(null)
     val currentOpenedChildAttributes: MutableState<rimma.mixeeva.kidsplay.data.server.models.GetChildAttributesResponse?> =
         mutableStateOf(null)
-    var currentChildAchievementsList = mutableStateListOf<rimma.mixeeva.kidsplay.data.server.models.GetChildAchievementByIdResponse>()
-    var currentChildGiftsList = mutableStateListOf<rimma.mixeeva.kidsplay.data.server.models.GetChildGiftByIdResponse>()
-    var currentChildColorLevelsList = mutableStateListOf<rimma.mixeeva.kidsplay.data.server.models.GetChildColorLevelByIdResponse>()
+    var currentChildAchievementsList =
+        mutableStateListOf<GetChildAchievementByIdResponse>()
+    var currentChildGiftsList =
+        mutableStateListOf<rimma.mixeeva.kidsplay.data.server.models.GetChildGiftByIdResponse>()
+    var currentChildColorLevelsList =
+        mutableStateListOf<rimma.mixeeva.kidsplay.data.server.models.GetChildColorLevelByIdResponse>()
+
+    val achievementsDescription = achievementDescriptionDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    val colorGameDescription = colorGameDescriptionDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+    val giftsDescription = giftDescriptionDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
     fun login(login: String, password: String) {
         viewModelScope.launch {
@@ -188,12 +222,10 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.createAchievements(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateAchievementRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained
+                        CreateUpdateAchievementRequest(
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            obtained = item.obtained
                         )
                     )
                     if (response.isSuccessful) {
@@ -223,12 +255,10 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.updateAchievements(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateAchievementRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained
+                        CreateUpdateAchievementRequest(
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            obtained = item.obtained
                         )
                     )
                     if (response.isSuccessful) {
@@ -258,17 +288,12 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.createColorGameLevels(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateColorGameLevelsRequest(
-                            nickname,
-                            item.levelNumber,
-                            item.starsAchieved,
-                            item.timer,
-                            item.subLevels,
-                            item.isColorPhrased,
-                            item.hasVoiceActing,
-                            item.numOfColors,
-                            item.isLevelOpened,
-                            item.gift ?: 0
+                        CreateUpdateColorGameLevelsRequest(
+                            username = nickname,
+                            levelNumber = item.levelNumber,
+                            starsAchieved = item.starsAchieved,
+                            isLevelOpened = item.isLevelOpened,
+                            descriptionId = item.descriptionId
                         )
                     )
                     if (response.isSuccessful) {
@@ -298,17 +323,12 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.updateColorGameLevels(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateColorGameLevelsRequest(
-                            nickname,
-                            item.levelNumber,
-                            item.starsAchieved,
-                            item.timer,
-                            item.subLevels,
-                            item.isColorPhrased,
-                            item.hasVoiceActing,
-                            item.numOfColors,
-                            item.isLevelOpened,
-                            item.gift ?: 0
+                        CreateUpdateColorGameLevelsRequest(
+                            username = nickname,
+                            levelNumber = item.levelNumber,
+                            starsAchieved = item.starsAchieved,
+                            descriptionId = item.descriptionId,
+                            isLevelOpened = item.isLevelOpened,
                         )
                     )
                     if (response.isSuccessful) {
@@ -338,14 +358,12 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.createGifts(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateGiftRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained,
-                            item.opened,
-                            item.used
+                        CreateUpdateGiftRequest(
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            obtained = item.obtained,
+                            opened = item.opened,
+                            used = item.used
                         )
                     )
                     if (response.isSuccessful) {
@@ -375,14 +393,12 @@ class ParentViewModel @Inject constructor(
                 if (childToken != null && nickname != null) {
                     val response = RetrofitInstance.instance.updateGifts(
                         "Bearer $childToken",
-                        rimma.mixeeva.kidsplay.data.server.models.CreateUpdateGiftRequest(
-                            nickname,
-                            item.title,
-                            item.condition,
-                            item.description,
-                            item.obtained,
-                            item.opened,
-                            item.used
+                        CreateUpdateGiftRequest(
+                            username = nickname,
+                            descriptionId = item.descriptionId,
+                            opened = item.opened,
+                            used = item.used,
+                            obtained = item.obtained
                         )
                     )
                     if (response.isSuccessful) {
@@ -398,7 +414,6 @@ class ParentViewModel @Inject constructor(
             }
         }
     }
-
 
 
     fun getAllParentChildren() {

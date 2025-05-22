@@ -1,5 +1,6 @@
 package rimma.mixeeva.kidsplay.screens.colorGame
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import rimma.mixeeva.kidsplay.screens.components.ColorLevel
 fun ColorGameFirstLevelsScreen(viewModel: ColorGameViewModel) {
 
     val colorLevels = viewModel.colorGameLevels.collectAsState()
+    val colorLevelDescription = viewModel.colorGameDescriptions.collectAsState()
     Box(contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.grass_texture),

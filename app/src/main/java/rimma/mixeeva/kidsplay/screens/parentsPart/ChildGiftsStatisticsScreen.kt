@@ -20,6 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +35,7 @@ import rimma.mixeeva.kidsplay.ui.theme.Purple40
 
 @Composable
 fun ChildGiftsStatisticsScreen(viewModel: ParentViewModel) {
+    val giftDescription = viewModel.giftsDescription.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -123,14 +125,14 @@ fun ChildGiftsStatisticsScreen(viewModel: ParentViewModel) {
                                     .background(Color.White)
                             ) {
                                 Text(
-                                    gift.title, modifier = Modifier
+                                    giftDescription.value.first { it.id == gift.descriptionId }.title, modifier = Modifier
                                         .padding(4.dp)
                                         .width(140.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    gift.condition,
+                                    giftDescription.value.first { it.id == gift.descriptionId }.condition,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),
@@ -138,7 +140,7 @@ fun ChildGiftsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    gift.description,
+                                    giftDescription.value.first { it.id == gift.descriptionId }.description,
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),

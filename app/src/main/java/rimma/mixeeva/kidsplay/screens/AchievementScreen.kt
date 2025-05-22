@@ -29,6 +29,7 @@ import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
 @Composable
 fun AchievementScreen(viewModel: MainViewModel) {
     val achievements by viewModel.achievements.collectAsState()
+    val achievementDescription by viewModel.achievementsDescription.collectAsState()
     Box {
         Image(
             painter = painterResource(id = R.drawable.bluewall),
@@ -67,7 +68,7 @@ fun AchievementScreen(viewModel: MainViewModel) {
                         contentDescription = "blue wall",
                     )
                     AutoResizedText(
-                        text = "\"${item.title}\"",
+                        text = "\"${achievementDescription.first { it.id == item.descriptionId }.title}\"",
                         modifier = Modifier.fillMaxWidth(0.7f),
                         size = 36.sp,
                         color = Color.Black,

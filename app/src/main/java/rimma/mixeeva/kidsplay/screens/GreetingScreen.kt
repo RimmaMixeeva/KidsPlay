@@ -26,6 +26,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +52,10 @@ import rimma.mixeeva.kidsplay.ui.theme.DarkYellow
 
 @Composable
 fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
+    val gifts by viewModel.gifts.collectAsState()//нельзя удалять, иначе во viewmodel список gifts будет empty,
+    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
+    val giftsDescription by viewModel.giftsDescription.collectAsState()//нельзя удалять, иначе во viewmodel список gifts будет empty,
+    // так как список начинает заполняться только при появлении первого подписчика через collect или collectAsState()
     LaunchedEffect(Unit) { viewModel.wasAccountRegistered() }
     Box {
         Image(

@@ -39,6 +39,7 @@ fun GiftInfoScreen(
     id: Int
 ) {
     val gift = viewModel.gifts.collectAsState().value.first { it.id == id }
+    val giftDescription = viewModel.giftsDescription.collectAsState().value.first { it.id == id }
     Box(contentAlignment = Alignment.Center) {
         Image(
             painter = painterResource(id = R.drawable.treasury),
@@ -58,7 +59,7 @@ fun GiftInfoScreen(
         ) {
             AutoResizedText(
                 align = TextAlign.Center,
-                text = "\"" + gift.title + "\"",
+                text = "\"" + giftDescription.title + "\"",
                 size = 30.sp,
                 color = Color.Black,
                 hasShadow = false,
@@ -74,12 +75,12 @@ fun GiftInfoScreen(
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left
                 )
                 AutoResizedText(
-                    text = gift.description, size = 24.sp, color = Color.Black, hasShadow = false,
+                    text = giftDescription.description, size = 24.sp, color = Color.Black, hasShadow = false,
                     modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
-                if (gift.executor != null) {
+                if (giftDescription.executor != null) {
                     AutoResizedText(
                         text = "Исполнитель:",
                         size = 24.sp,
@@ -89,7 +90,7 @@ fun GiftInfoScreen(
                         align = TextAlign.Left
                     )
                     AutoResizedText(
-                        text = gift.executor, size = 24.sp, color = Color.Black, hasShadow = false,
+                        text = giftDescription.executor, size = 24.sp, color = Color.Black, hasShadow = false,
                         modifier = Modifier.fillMaxWidth(), align = TextAlign.Left, softWrap = true
                     )
                 } else {
@@ -98,11 +99,11 @@ fun GiftInfoScreen(
                             viewModel.navigator.popBackStack()
                             CoroutineScope(Dispatchers.Default).launch {
                                 viewModel.upgradeCharacteristics(
-                                    nIntelligence = gift.intelligence,
-                                    nAttentiveness = gift.attentiveness,
-                                    nReaction = gift.reaction,
-                                    nLogic = gift.logic,
-                                    nCoins = gift.coins
+                                    nIntelligence = giftDescription.intelligence,
+                                    nAttentiveness = giftDescription.attentiveness,
+                                    nReaction = giftDescription.reaction,
+                                    nLogic = giftDescription.logic,
+                                    nCoins = giftDescription.coins
                                 )
                                 viewModel.giftWasUsed(gift.id)
                             }

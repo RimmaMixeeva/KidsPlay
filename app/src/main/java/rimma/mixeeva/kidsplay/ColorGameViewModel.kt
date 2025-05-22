@@ -2,6 +2,7 @@ package rimma.mixeeva.kidsplay
 
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
+import rimma.mixeeva.kidsplay.data.database.dao.ColorGameDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
 import rimma.mixeeva.kidsplay.navigation.Navigator
@@ -27,6 +29,7 @@ class ColorGameViewModel @Inject constructor(
     @ApplicationContext var context: Context,
     val navigator: Navigator,
     val colorGameLevelDao: ColorGameLevelDao,
+    val colorGameDescriptionDao: ColorGameDescriptionDao,
     var mediaPlayer: KidsMediaPlayer,
     val giftDao: GiftDao,
 ) : ViewModel() {
@@ -44,6 +47,11 @@ class ColorGameViewModel @Inject constructor(
     )
 
     var colorGameLevels = colorGameLevelDao.getAll().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+    var colorGameDescriptions = colorGameDescriptionDao.getAll().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
@@ -66,20 +74,20 @@ class ColorGameViewModel @Inject constructor(
 
 
     fun startLevel(id: Int) {
-        val bdColorLevel = colorGameLevels.value.first { it.levelNumber == id }
+        val colorDescriptions = colorGameDescriptions.value.first {it.id == id}
         //заполняем массив цветов, среди которых пользователь будет искать нужное
         gColors.clear()
-        gColors.addAll(colorList.shuffled().take(bdColorLevel.numOfColors))
+        gColors.addAll(colorList.shuffled().take(colorDescriptions.numOfColors))
 
         //выбираем целевой цвет
         gCurrentColorToGuess.value = gColors.shuffled().take(1).first()
-        if (bdColorLevel.isColorPhrased) {
+        if (colorDescriptions.isColorPhrased) {
             colorForPhrase.value =
                 gColors.filter { it.first != gCurrentColorToGuess.value?.first }.shuffled().take(1)
                     .first()
         }
-        timerTime.value = bdColorLevel.timer
-        gNumberOfSubLevels.intValue = bdColorLevel.subLevels
+        timerTime.value = colorDescriptions.timer
+        gNumberOfSubLevels.intValue = colorDescriptions.subLevels
         gCurrentSubLevelsCompleted.intValue = 0
         correctAnswers.clear()
         navigator.navigate(Screen.ColorLevelScreen(id))
@@ -87,9 +95,9 @@ class ColorGameViewModel @Inject constructor(
     }
 
     suspend fun subLevelCompleted(levelNumber: Int, guessedCorrectly: Boolean, activateAchievement: (Int) -> Unit) {
-        val bdColorLevel = colorGameLevels.value.first { it.levelNumber == levelNumber }
+        val colorDescriptions = colorGameDescriptions.value.first {it.id == levelNumber}
         //меняем цвет текста
-        if (bdColorLevel.isColorPhrased) {
+        if (colorDescriptions.isColorPhrased) {
             colorForPhrase.value =
                 gColors.filter { it.first != gCurrentColorToGuess.value?.first }.shuffled().take(1)
                     .first()
@@ -106,7 +114,7 @@ class ColorGameViewModel @Inject constructor(
             gCurrentSubLevelsCompleted.intValue += 1
             //заполняем массив цветов, среди которых пользователь будет искать нужное
             gColors.clear()
-            gColors.addAll(colorList.shuffled().take(bdColorLevel.numOfColors))
+            gColors.addAll(colorList.shuffled().take(colorDescriptions.numOfColors))
             //выбираем целевой цвет
             gCurrentColorToGuess.value = gColors.shuffled().take(1).first()
         }
@@ -124,7 +132,7 @@ class ColorGameViewModel @Inject constructor(
             if (newStarsAchieved > oldStarsAchieved) { //проверяем получили ли мы больше звезд, чтоб не сбросить хорошие результаты.
                 colorGameLevelDao.updateAll(bdColorLevel.copy(starsAchieved = newStarsAchieved))
                 if (newStarsAchieved == 3) { //если получили три звезды, то также необходимо выдать награду  за уровень, если она полагается
-                    val giftId = colorGameLevels.value.firstOrNull {it.levelNumber == levelNumber}?.gift
+                    val giftId = colorGameDescriptions.value.firstOrNull {it.id == levelNumber}?.gift
                     if (giftId != null){
                     giftDao.updateAll(gifts.value.first { it.id == giftId }.copy(opened = true))
                         withContext(Dispatchers.Main) {
