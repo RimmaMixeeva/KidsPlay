@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
@@ -74,28 +75,47 @@ class ColorGameViewModel @Inject constructor(
 
 
     fun startLevel(id: Int) {
-        val colorDescriptions = colorGameDescriptions.value.first {it.id == id}
+        Log.d("TEST5", colorGameDescriptions.value.size.toString() + " shouldnt be 0")
+        val colorDescriptions = colorGameDescriptions.value.firstOrNull {it.id == id}
+        Log.d("TEST5", colorDescriptions.toString() + " shouldnt be null")
+        if (colorDescriptions != null){
         //заполняем массив цветов, среди которых пользователь будет искать нужное
         gColors.clear()
+            Log.d("TEST5", colorDescriptions.numOfColors.toString() + " - количество цветов")
         gColors.addAll(colorList.shuffled().take(colorDescriptions.numOfColors))
+            Log.d("TEST5", gColors.map { item -> item.first }.toString() + " - цвета предложенные для выбора")
 
         //выбираем целевой цвет
         gCurrentColorToGuess.value = gColors.shuffled().take(1).first()
+        Log.d("TEST5", gCurrentColorToGuess.value.toString() + " - цвет для угадывания")
+       Log.d("TEST5", gColors.size.toString() + " - gcolors size")
         if (colorDescriptions.isColorPhrased) {
-            colorForPhrase.value =
-                gColors.filter { it.first != gCurrentColorToGuess.value?.first }.shuffled().take(1)
-                    .first()
+            val lst =  gColors.filter { it.first != gCurrentColorToGuess.value?.first }.shuffled()
+            Log.d("TEST5", lst.toString() + " - перемешанные цвета кроме целевого")
+            Log.d("TEST5", gColors.size.toString() + " - gcolors size")
+            colorForPhrase.value = lst.take(1).first()
+            Log.d("TEST5", colorForPhrase.toString() + " - цвет фразы")
+            Log.d("TEST5", gColors.size.toString() + " - gcolors size")
         }
         timerTime.value = colorDescriptions.timer
         gNumberOfSubLevels.intValue = colorDescriptions.subLevels
         gCurrentSubLevelsCompleted.intValue = 0
         correctAnswers.clear()
+            Log.d("TEST5", id.toString() + " - level id")
         navigator.navigate(Screen.ColorLevelScreen(id))
-
+            Log.d("TEST5", gColors.size.toString() + " - gcolors size")
+        }
     }
 
     suspend fun subLevelCompleted(levelNumber: Int, guessedCorrectly: Boolean, activateAchievement: (Int) -> Unit) {
+        if (guessedCorrectly) {
+            mediaPlayer.playShortSongAndRelease(R.raw.correct_answer)
+        } else {
+            mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+        }
+        Log.d("TEST5", "LEVEL NUMBER $levelNumber")
         val colorDescriptions = colorGameDescriptions.value.first {it.id == levelNumber}
+        Log.d("TEST5", "colorDescriptions $colorDescriptions")
         //меняем цвет текста
         if (colorDescriptions.isColorPhrased) {
             colorForPhrase.value =
@@ -120,7 +140,7 @@ class ColorGameViewModel @Inject constructor(
         }
     }
 
-    suspend fun finishLevel(levelNumber: Int? = null, activateAchievement: (Int) -> Unit) {
+    suspend fun finishLevel(levelNumber: Int? = null, activateAchievement: suspend (Int) -> Unit) {
         if (levelNumber != null) { //успешно завершили уровень
             val bdColorLevel = colorGameLevels.value.first { it.levelNumber == levelNumber }
             val numOfAllStars = 3
@@ -142,16 +162,16 @@ class ColorGameViewModel @Inject constructor(
 
                 }
             }
-            //выдаём ачивку за 1й, 10й, 31й и 60й уровень
+            //выдаём ачивку за 1й, 10й, 31й уровень
+            Log.d("TEST5", " HERE 1")
             when (levelNumber){
                 1 ->  activateAchievement(2)
                 10 -> activateAchievement(3)
                 46 -> activateAchievement(4)
-                60 -> {
-                    if (colorGameLevels.value.filter { it.starsAchieved == 3 }.size == 60){
-                        activateAchievement(5)
-                    }
-                }
+            }
+            if (colorGameLevels.value.filter { it.starsAchieved == 3 }.size == 60){
+                delay(300)
+                activateAchievement(5)
             }
 
             if (levelNumber != LAST_LEVEL && newStarsAchieved > 0) {

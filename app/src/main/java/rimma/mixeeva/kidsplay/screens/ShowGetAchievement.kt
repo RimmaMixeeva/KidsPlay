@@ -36,7 +36,9 @@ fun ShowGetAchievement(
         if (viewModel.currentAchievementToShow.value != null){
             if (achievements.firstOrNull{it.id == viewModel.currentAchievementToShow.value}?.obtained == false){
                 allowShowing = true
-                viewModel.activateAchievement()
+                viewModel.currentAchievementToShow.value?.let {
+                    viewModel.activateAchievement(it)
+                }
                 viewModel.mediaPlayer.playSong(R.raw.achievement, false)
                 delay(2000)
                 allowShowing = false

@@ -91,5 +91,37 @@ sealed interface Screen {
     @Serializable
     data object ChildColorGameLevelsStatisticsScreen: Screen
 
+    @Serializable
+    data object PairGameScreen: Screen
+
+    @Serializable
+    data class PairGameLevelScreen(
+        var id: Int
+    ): Screen
+
+    @Serializable
+    data object PairGameFirstLevelsScreen: Screen
+    @Serializable
+    data object PairGameSecondLevelsScreen: Screen
+
+    @Serializable
+    data object StroopGameScreen: Screen
+    @Serializable
+    data object StroopGameFirstLevelsScreen: Screen
+
+    @Serializable
+    data object StroopGameSecondLevelsScreen: Screen
+
+    @Serializable
+    data object StroopGameThirdLevelsScreen: Screen
+
+    @Serializable
+    data object StroopGameFourthLevelsScreen: Screen
+
+    @Serializable
+    data class StroopGameLevelScreen(
+        var id: Int
+    ): Screen
+
 
 }

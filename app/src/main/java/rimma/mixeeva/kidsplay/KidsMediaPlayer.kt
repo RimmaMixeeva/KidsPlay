@@ -40,6 +40,4 @@ class KidsMediaPlayer @Inject constructor(@ApplicationContext val context: Conte
         }
         player?.start()
     }
-
-
 }

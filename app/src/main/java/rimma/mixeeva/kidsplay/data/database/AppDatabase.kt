@@ -8,15 +8,26 @@ import rimma.mixeeva.kidsplay.data.database.dao.ColorGameDescriptionDao
 import rimma.mixeeva.kidsplay.data.database.dao.ColorGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDao
 import rimma.mixeeva.kidsplay.data.database.dao.GiftDescriptionDao
+import rimma.mixeeva.kidsplay.data.database.dao.PairGameDescriptionDao
+import rimma.mixeeva.kidsplay.data.database.dao.PairGameLevelDao
+import rimma.mixeeva.kidsplay.data.database.dao.StroopEffectGameDescriptionDao
+import rimma.mixeeva.kidsplay.data.database.dao.StroopEffectGameLevelDao
 import rimma.mixeeva.kidsplay.data.database.entities.AchievementDescriptionDB
 import rimma.mixeeva.kidsplay.data.database.entities.AchievementsDB
 import rimma.mixeeva.kidsplay.data.database.entities.ColorGameDescriptionDB
 import rimma.mixeeva.kidsplay.data.database.entities.ColorGameLevelDB
 import rimma.mixeeva.kidsplay.data.database.entities.GiftDescriptionDB
 import rimma.mixeeva.kidsplay.data.database.entities.GiftsDB
+import rimma.mixeeva.kidsplay.data.database.entities.PairGameDescriptionDB
+import rimma.mixeeva.kidsplay.data.database.entities.PairGameLevelDB
+import rimma.mixeeva.kidsplay.data.database.entities.StroopEffectGameDescriptionDB
+import rimma.mixeeva.kidsplay.data.database.entities.StroopEffectLevelDB
 
 @Database(
-    entities = [GiftsDB::class, AchievementsDB::class, ColorGameLevelDB::class, GiftDescriptionDB::class, AchievementDescriptionDB::class, ColorGameDescriptionDB::class],
+    entities = [PairGameDescriptionDB::class, GiftsDB::class, AchievementsDB::class,
+                ColorGameLevelDB::class, GiftDescriptionDB::class, AchievementDescriptionDB::class,
+                ColorGameDescriptionDB::class, PairGameLevelDB::class, StroopEffectLevelDB::class,
+               StroopEffectGameDescriptionDB::class],
     version = 1,
     exportSchema = true
 )
@@ -27,4 +38,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun giftDescriptionDao(): GiftDescriptionDao
     abstract fun achievementDescriptionDao(): AchievementDescriptionDao
     abstract fun colorGameDescriptionDao(): ColorGameDescriptionDao
+    abstract fun pairGameDescriptionDao(): PairGameDescriptionDao
+    abstract fun pairGameLevelDao(): PairGameLevelDao
+    abstract fun stroopEffectGameDescriptionDao(): StroopEffectGameDescriptionDao
+    abstract fun stroopEffectGameLevelDao(): StroopEffectGameLevelDao
 }

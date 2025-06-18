@@ -96,6 +96,7 @@ fun GiftInfoScreen(
                 } else {
                     Button(
                         onClick = {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.coins)
                             viewModel.navigator.popBackStack()
                             CoroutineScope(Dispatchers.Default).launch {
                                 viewModel.upgradeCharacteristics(

@@ -2,6 +2,7 @@ package rimma.mixeeva.kidsplay.screens
 
 import android.app.Activity
 import android.util.Log
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -24,21 +26,31 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.charts.DonutPieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
 import rimma.mixeeva.kidsplay.MainViewModel
 import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.navigation.Screen
@@ -48,6 +60,7 @@ import rimma.mixeeva.kidsplay.ui.theme.DarkBlue
 import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 import rimma.mixeeva.kidsplay.ui.theme.DarkMagenta
 import rimma.mixeeva.kidsplay.ui.theme.DarkYellow
+import kotlin.math.truncate
 
 
 @Composable
@@ -105,7 +118,10 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
             Column {
                 GreetingScreenButton(
                     onClick = {
-                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.KidAccountScreen())
+                        if (viewModel.wasAccountRegistered.value) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.navigator.navigate(Screen.KidAccountScreen())
+                        }
                         else viewModel.playSound(R.raw.blocked)
                     },
                     wasAccountRegistered = viewModel.wasAccountRegistered.value,
@@ -117,7 +133,10 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingScreenButton(
                     onClick = {
-                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.AchievementScreen) else viewModel.playSound(
+                        if (viewModel.wasAccountRegistered.value) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.navigator.navigate(Screen.AchievementScreen)
+                        } else viewModel.playSound(
                             R.raw.blocked
                         )
                     },
@@ -130,7 +149,10 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 GreetingScreenButton(
                     onClick = {
-                        if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.GiftScreen) else viewModel.playSound(
+                        if (viewModel.wasAccountRegistered.value) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.navigator.navigate(Screen.GiftScreen)
+                        } else viewModel.playSound(
                             R.raw.blocked
                         )
                     },
@@ -144,6 +166,7 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
 
             GreetingScreenButton(
                 onClick = {
+                    viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                     if (viewModel.wasAccountRegistered.value) viewModel.navigator.navigate(Screen.PlayGroundScreen)
                     else viewModel.navigator.navigate(Screen.ChooseAvatarScreen)
                 },
@@ -156,3 +179,4 @@ fun GreetingScreen(modifier: Modifier = Modifier, viewModel: MainViewModel) {
         }
     }
 }
+

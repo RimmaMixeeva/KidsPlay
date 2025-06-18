@@ -21,7 +21,7 @@ import rimma.mixeeva.kidsplay.screens.components.ColorLevel
 
 @Composable
 fun ColorGameFourthLevelsScreen(viewModel: ColorGameViewModel) {
-
+    val colorLevelDescription = viewModel.colorGameDescriptions.collectAsState()
     val colorLevels = viewModel.colorGameLevels.collectAsState()
     Box(contentAlignment = Alignment.Center) {
         Image(

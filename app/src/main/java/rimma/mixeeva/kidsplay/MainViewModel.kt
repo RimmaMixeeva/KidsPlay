@@ -43,12 +43,13 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     var currentAchievementToShow: MutableState<Int?> = mutableStateOf(null)
-    suspend fun activateAchievement() {
-        val newAchievements =
-            achievements.value.firstOrNull { it.id == currentAchievementToShow.value }
+    suspend fun activateAchievement(id: Int) {
+        Log.d("TEST5", achievementsDao.getAll().first().toString())
+        val newAchievement =
+            achievements.value.firstOrNull { it.id == id }
                 ?.copy(obtained = true)
-        if (newAchievements != null) {
-            achievementsDao.updateAll(newAchievements)
+        if (newAchievement != null) {
+            achievementsDao.updateAll(newAchievement)
         }
     }
 
@@ -243,9 +244,10 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    fun changeMusicToColorGameSong() {
+    fun turnOffSong() {
         mediaPlayer.destroy()
     }
+
 
     fun startObservation(){
         viewModelScope.launch {

@@ -14,9 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import rimma.mixeeva.kidsplay.ParentViewModel
 import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
+import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 import rimma.mixeeva.kidsplay.ui.theme.Purple40
 
 @Composable
@@ -128,12 +134,14 @@ fun ChildAchievementsStatisticsScreen(viewModel: ParentViewModel) {
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    if (achievement.obtained) "да" else "нет",
+                                Icon(
+                                    imageVector = if (achievement.obtained) Icons.Default.Check else Icons.Default.Close,
+                                    contentDescription = if (achievement.obtained) "yes" else "no",
+                                    tint = if (achievement.obtained) DarkGreen else Color.Red,
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(200.dp),
-                                    fontSize = 20.sp
+                                        .width(200.dp)
+                                        .size(40.dp),
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))

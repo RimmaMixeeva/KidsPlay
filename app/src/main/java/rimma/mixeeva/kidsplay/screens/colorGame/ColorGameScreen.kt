@@ -75,6 +75,7 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .align(Alignment.CenterHorizontally)
                     .border(width = 2.dp, color = DarkGreen)
                     .clickable {
+                        viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                         viewModel.navigator.navigate(Screen.ColorGameFirstLevelsScreen)
                     },
                 contentAlignment = Alignment.Center
@@ -91,7 +92,10 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .border(width = 2.dp, color = DarkYellow)
                     .clickable {
                         if (gameLevels.firstOrNull { it.levelNumber == 16 }?.isLevelOpened == true) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                             viewModel.navigator.navigate(Screen.ColorGameSecondLevelsScreen)
+                        } else {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.blocked)
                         }
                     },
                 contentAlignment = Alignment.Center
@@ -107,7 +111,10 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .border(width = 2.dp, color = DarkOrange)
                     .clickable {
                         if (gameLevels.firstOrNull { it.levelNumber == 31 }?.isLevelOpened == true) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                             viewModel.navigator.navigate(Screen.ColorGameThirdLevelsScreen)
+                        } else {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.blocked)
                         }
                     },
                 contentAlignment = Alignment.Center
@@ -123,7 +130,10 @@ fun ColorGameScreen(viewModel: ColorGameViewModel) {
                     .border(width = 2.dp, color = DarkRed)
                     .clickable {
                         if (gameLevels.firstOrNull { it.levelNumber == 46 }?.isLevelOpened == true) {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                             viewModel.navigator.navigate(Screen.ColorGameFourthLevelsScreen)
+                        } else {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.blocked)
                         }
                     },
                 contentAlignment = Alignment.Center

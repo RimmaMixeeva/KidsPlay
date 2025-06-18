@@ -35,6 +35,10 @@ import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFirstLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameFourthLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameSecondLevelsScreen
 import rimma.mixeeva.kidsplay.screens.colorGame.ColorGameThirdLevelsScreen
+import rimma.mixeeva.kidsplay.screens.pairGame.PairGameFirstLevelsScreen
+import rimma.mixeeva.kidsplay.screens.pairGame.PairGameLevelScreen
+import rimma.mixeeva.kidsplay.screens.pairGame.PairGameScreen
+import rimma.mixeeva.kidsplay.screens.pairGame.PairGameSecondLevelsScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildAchievementsStatisticsScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildAttributesScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildColorGameLevelsStatisticsScreen
@@ -42,6 +46,12 @@ import rimma.mixeeva.kidsplay.screens.parentsPart.ChildGiftsStatisticsScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.ChildrenScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.LoginScreen
 import rimma.mixeeva.kidsplay.screens.parentsPart.RegistrationScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StroopGameFourthLevelsScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StroopGameScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StroopGameSecondLevelsScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StroopGameThirdLevelsScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StroopLevelScreen
+import rimma.mixeeva.kidsplay.screens.stroopEffectGame.StropGameFirstLevelsScreen
 import rimma.mixeeva.kidsplay.ui.theme.KidsPlayTheme
 import javax.inject.Inject
 
@@ -56,7 +66,10 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()
     private val colorGameViewModel by viewModels<ColorGameViewModel>()
+    private val pairGameViewModel by viewModels<PairGameViewModel>()
     private val parentViewModel by viewModels<ParentViewModel>()
+    private val stroopGameViewModel by viewModels<StroopEffectGameViewModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,6 +163,38 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<Screen.ChildColorGameLevelsStatisticsScreen> {
                         ChildColorGameLevelsStatisticsScreen(parentViewModel)
+                    }
+                    composable<Screen.PairGameScreen> {
+                        PairGameScreen(pairGameViewModel)
+                    }
+                    composable<Screen.PairGameLevelScreen> {
+                        val args = it.toRoute<Screen.PairGameLevelScreen>()
+                        PairGameLevelScreen(pairGameViewModel, args.id)
+                    }
+                    composable<Screen.StroopGameLevelScreen> {
+                        val args = it.toRoute<Screen.StroopGameLevelScreen>()
+                        StroopLevelScreen(stroopGameViewModel, args.id)
+                    }
+                    composable<Screen.PairGameFirstLevelsScreen> {
+                        PairGameFirstLevelsScreen(pairGameViewModel)
+                    }
+                    composable<Screen.PairGameSecondLevelsScreen> {
+                        PairGameSecondLevelsScreen(pairGameViewModel)
+                    }
+                    composable<Screen.StroopGameScreen> {
+                        StroopGameScreen(stroopGameViewModel)
+                    }
+                   composable<Screen.StroopGameFirstLevelsScreen> {
+                       StropGameFirstLevelsScreen(stroopGameViewModel)
+                    }
+                    composable<Screen.StroopGameSecondLevelsScreen> {
+                        StroopGameSecondLevelsScreen(stroopGameViewModel)
+                    }
+                    composable<Screen.StroopGameThirdLevelsScreen> {
+                        StroopGameThirdLevelsScreen(stroopGameViewModel)
+                    }
+                    composable<Screen.StroopGameFourthLevelsScreen> {
+                        StroopGameFourthLevelsScreen(stroopGameViewModel)
                     }
                 }
             }

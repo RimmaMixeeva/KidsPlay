@@ -9,7 +9,6 @@ import rimma.mixeeva.kidsplay.data.server.RetrofitInstance.gson
 
 object RetrofitInstance {
    private const val BASE_URL = "http://45.159.181.96:8080/"
-   //private const val BASE_URL = "http://192.168.0.100:8080/"
     val gson = GsonBuilder()
         .setLenient()
         .create()

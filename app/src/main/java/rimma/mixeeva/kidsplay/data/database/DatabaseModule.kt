@@ -52,6 +52,14 @@ class DatabaseModule {
 
     @Singleton
     @Provides
+    fun providePairGameLevelDao(database: AppDatabase) = database.pairGameLevelDao()
+
+    @Singleton
+    @Provides
+    fun provideStroopEffectGameLevelDao(database: AppDatabase) = database.stroopEffectGameLevelDao()
+
+    @Singleton
+    @Provides
     fun provideGiftDescriptionDao(database: AppDatabase) = database.giftDescriptionDao()
 
     @Singleton
@@ -62,4 +70,11 @@ class DatabaseModule {
     @Provides
     fun provideColorGameDescriptionDao(database: AppDatabase) = database.colorGameDescriptionDao()
 
+    @Singleton
+    @Provides
+    fun providePairGameDescriptionDao(database: AppDatabase) = database.pairGameDescriptionDao()
+
+    @Singleton
+    @Provides
+    fun provideStroopEffectGameDescriptionDao(database: AppDatabase) = database.stroopEffectGameDescriptionDao()
 }

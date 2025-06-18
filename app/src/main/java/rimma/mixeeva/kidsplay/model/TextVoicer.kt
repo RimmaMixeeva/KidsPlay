@@ -4,9 +4,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.Voice
 import android.util.Log
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
-import javax.inject.Inject
 
 object TextVoicer {
     private var tts: TextToSpeech? = null
@@ -29,11 +27,11 @@ object TextVoicer {
             if (status == TextToSpeech.SUCCESS) {
                 tts?.language = Locale("ru", "RU")
                 val voice = Voice(
-                    "ru-ru-x-ruc-network",
+                    "ru-RU-language",
                     Locale("ru", "RU"),
                     400,
                     200,
-                    true,
+                    false,
                     setOf("networkTimeoutMs", "legacySetLanguageVoice", "networkRetriesCount")
                 )
                 tts?.voice = voice

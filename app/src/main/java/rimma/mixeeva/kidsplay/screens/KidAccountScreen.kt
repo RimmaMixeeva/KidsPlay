@@ -192,6 +192,7 @@ fun KidAccountScreen(viewModel: MainViewModel, ava: Int?, nick: String?) {
                             CoroutineScope(Dispatchers.Default).launch {
                                 viewModel.saveRegistrationInformation(avatar!!, nickname!!)
                                 viewModel.currentAchievementToShow.value = 1
+                                viewModel.activateAchievement(1)
                             }
                             enableAnimation = !enableAnimation
                         },

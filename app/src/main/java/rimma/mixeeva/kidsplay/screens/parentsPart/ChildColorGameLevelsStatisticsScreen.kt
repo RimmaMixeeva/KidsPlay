@@ -1,5 +1,6 @@
 package rimma.mixeeva.kidsplay.screens.parentsPart
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,9 +15,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -30,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import rimma.mixeeva.kidsplay.ParentViewModel
 import rimma.mixeeva.kidsplay.R
 import rimma.mixeeva.kidsplay.screens.components.AutoResizedText
+import rimma.mixeeva.kidsplay.ui.theme.DarkGreen
 import rimma.mixeeva.kidsplay.ui.theme.Purple40
 
 
@@ -148,29 +155,31 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     ) {
-                        viewModel.currentChildColorLevelsList.forEach { level ->
+                        viewModel.currentChildColorLevelsList.forEach { item ->
                             Row(
                                 modifier = Modifier
                                     .border(width = 1.dp, color = Color.Gray)
                                     .background(Color.White)
                             ) {
                                 Text(
-                                    level.levelNumber.toString(), modifier = Modifier
+                                    item.levelNumber.toString(), modifier = Modifier
                                         .padding(4.dp)
                                         .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(
-                                    level.starsAchieved.toString(),
+                                    text = if (item.starsAchieved == 0) "—" else item.starsAchieved.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(100.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(2.dp))
+                                Log.d("TEST9", "description id = ${item.descriptionId}")
+                                Log.d("TEST9", "COLOR LEVELS DESCRIPTION - ${colorLevelsDescription.value.size}")
                                 Text(
-                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.timer == 0) "нет" else (colorLevelsDescription.value[level.descriptionId].timer.toString() + " сек"),
+                                    if (colorLevelsDescription.value.first { it.id == item.descriptionId }.timer == 0) "—" else (colorLevelsDescription.value.first { it.id == item.descriptionId }.timer.toString() + " сек"),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(100.dp),
@@ -178,47 +187,53 @@ fun ChildColorGameLevelsStatisticsScreen(viewModel: ParentViewModel) {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    colorLevelsDescription.value.first { it.id == level.descriptionId }.subLevels.toString(),
+                                    colorLevelsDescription.value.first { it.id == item.descriptionId }.subLevels.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(140.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.isColorPhrased) "да" else "нет",
+                                Icon(
+                                    imageVector = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.isColorPhrased) Icons.Default.Check else Icons.Default.Close,
+                                    contentDescription = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.isColorPhrased) "yes" else "no",
+                                    tint = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.isColorPhrased) DarkGreen else Color.Red,
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(140.dp),
-                                    fontSize = 20.sp
+                                        .width(140.dp)
+                                        .size(40.dp),
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Icon(
+                                    imageVector = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.hasVoiceActing) Icons.Default.Check else Icons.Default.Close,
+                                    contentDescription = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.hasVoiceActing) "yes" else "no",
+                                    tint = if (colorLevelsDescription.value.first { it.id == item.descriptionId }.hasVoiceActing) DarkGreen else Color.Red,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .width(100.dp)
+                                        .size(40.dp),
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.hasVoiceActing) "да" else "нет",
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .width(100.dp),
-                                    fontSize = 20.sp
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    colorLevelsDescription.value.first { it.id == level.descriptionId }.numOfColors.toString(),
+                                    colorLevelsDescription.value.first { it.id == item.descriptionId }.numOfColors.toString(),
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(120.dp),
                                     fontSize = 20.sp
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    if (level.isLevelOpened) "да" else "нет",
+                                Icon(
+                                    imageVector = if (item.isLevelOpened) Icons.Default.Check else Icons.Default.Close,
+                                    contentDescription = if (item.isLevelOpened) "yes" else "no",
+                                    tint = if (item.isLevelOpened) DarkGreen else Color.Red,
                                     modifier = Modifier
                                         .padding(4.dp)
-                                        .width(100.dp),
-                                    fontSize = 20.sp
+                                        .width(100.dp)
+                                        .size(40.dp),
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    if (colorLevelsDescription.value.first { it.id == level.descriptionId }.gift == null) "награды нет" else "награда №${colorLevelsDescription.value.first{it.id == level.descriptionId}.gift}",
+                                    if (colorLevelsDescription.value.first { it.id == item.descriptionId }.gift == null) "—" else "награда №${colorLevelsDescription.value.first{it.id == item.descriptionId}.gift}",
                                     modifier = Modifier
                                         .padding(4.dp)
                                         .width(200.dp),

@@ -10,6 +10,8 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,25 +53,74 @@ fun PlaygroundScreen(viewModel: MainViewModel) {
                 size = 100.sp,
                 color = Color.White
             )
+            Row {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 50.dp)
+                        .aspectRatio(1f)
+                        .clickable {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.turnOffSong()
+                            viewModel.navigator.navigate(Screen.ColorGameScreen) }
+                        .border(width = 6.dp, color = Color.White, shape = RoundedCornerShape(24.dp))
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.color),
+                        contentDescription = "Игра в цвета",
+                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)),
+                    )
+                }
+                Spacer(modifier = Modifier.weight(0.1f).aspectRatio(1f))
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 50.dp)
+                        .aspectRatio(1f)
+                        .clickable {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.turnOffSong()
+                            viewModel.navigator.navigate(Screen.PairGameScreen)
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.4f)
-                    .padding(vertical = 50.dp)
-                    .aspectRatio(1f)
-                    .clickable {
-                        viewModel.changeMusicToColorGameSong()
-                        viewModel.navigator.navigate(Screen.ColorGameScreen) }
-                    .border(width = 6.dp, color = Color.White, shape = RoundedCornerShape(24.dp))
-                    .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.color),
-                    contentDescription = "Игра в цвета",
-                    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)),
-                )
+                        }
+                        .border(width = 6.dp, color = Color.White, shape = RoundedCornerShape(24.dp))
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.pair_game),
+                        contentDescription = "Игра найти пару",
+                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)),
+                    )
 
+                }
             }
+            Row {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(top = 50.dp)
+                        .aspectRatio(1f)
+                        .clickable {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
+                            viewModel.turnOffSong()
+                            viewModel.navigator.navigate(Screen.StroopGameScreen)
+
+                            }
+                        .border(width = 6.dp, color = Color.White, shape = RoundedCornerShape(24.dp))
+                        .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
+
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.stroop_effect_game),
+                        contentDescription = "Игра найди соответствие",
+                        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
+
         }
     }
 }

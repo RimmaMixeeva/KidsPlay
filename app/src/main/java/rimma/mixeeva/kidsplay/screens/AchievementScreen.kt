@@ -1,5 +1,6 @@
 package rimma.mixeeva.kidsplay.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -57,6 +58,7 @@ fun AchievementScreen(viewModel: MainViewModel) {
                         .padding(vertical = 10.dp)
                         .align(Alignment.CenterHorizontally)
                         .clickable {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                             viewModel.navigator.navigate(
                                 Screen.AchievementInfoScreen(item.id)
                             )

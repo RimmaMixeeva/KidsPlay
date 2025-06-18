@@ -57,6 +57,7 @@ fun GiftScreen(viewModel: MainViewModel) {
                         .padding(vertical = 10.dp)
                         .align(Alignment.CenterHorizontally)
                         .clickable {
+                            viewModel.mediaPlayer.playShortSongAndRelease(R.raw.button_tap_sound)
                         viewModel.navigator.navigate(
                             Screen.GiftInfoScreen(
                                 id = item.id,

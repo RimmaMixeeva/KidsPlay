@@ -23,8 +23,6 @@ class Updater @Inject constructor(
     var giftDao: GiftDao,
     var achievementsDao: AchievementsDao,
     var colorGameLevelDao: ColorGameLevelDao,
-    var achievementDescriptionDao: AchievementDescriptionDao,
-    var colorGameDescriptionDao: ColorGameDescriptionDao,
     var userPreferencesRepository: UserPreferencesRepository
 ) {
     suspend fun observeGifts() {

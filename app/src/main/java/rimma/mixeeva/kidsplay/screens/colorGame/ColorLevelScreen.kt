@@ -144,6 +144,7 @@ fun ColorLevelScreen(viewModel: ColorGameViewModel, mainViewModel: MainViewModel
                                 userScrollEnabled = true,
                                 verticalArrangement = Arrangement.Center
                             ) {
+                                Log.d("TEST5", "GColors - ${viewModel.gColors.size}")
                                 items(viewModel.gColors.size) { i ->
                                     Box(
                                         modifier = Modifier
@@ -161,7 +162,9 @@ fun ColorLevelScreen(viewModel: ColorGameViewModel, mainViewModel: MainViewModel
                                                         {achievementId -> mainViewModel.currentAchievementToShow.value = achievementId}
                                                     )
                                                 }
-                                                }
+                                                } else {
+                                                    viewModel.mediaPlayer.playShortSongAndRelease(R.raw.incorrect_answer)
+                                                 }
                                             }
                                     ) { }
                                 }
